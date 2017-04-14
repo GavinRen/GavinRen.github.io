@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="多线程,java," />
+  <meta name="keywords" content="java,多线程," />
 
 
 
@@ -85,7 +85,7 @@
 
 
 <meta name="description" content="java 中实现多线程有两种方法：继承Thread 类、实现Runnable接口，在程序开发中实现多线程，大多是实现Runnable 接口为主，实现Runnable 接口相比集成Thread类的优势：  可以避免由于java的单继承而带来的局限 增强程序的健壮性，代码能够被多个线程共享，代码与数据是独立的 适合多个相同程序代码的线程区处理同一资源的情况">
-<meta name="keywords" content="多线程,java">
+<meta name="keywords" content="java,多线程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="实现线程的两种方式">
 <meta property="og:url" content="http://yoursite.com/2017/03/02/实现线程的两种方式/index.html">
@@ -198,7 +198,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -208,7 +208,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -254,7 +254,7 @@
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/02/实现线程的两种方式/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="John Doe">
+    <meta itemprop="name" content="Gavin">
     <meta itemprop="description" content="">
     <meta itemprop="image" content="/images/avatar.gif">
   </span>
@@ -288,7 +288,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-02T15:00:00+08:00">
                 2017-03-02
@@ -309,7 +309,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -405,9 +405,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/多线程/" rel="tag"># 多线程</a>
-          
             <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
           
         </div>
       
@@ -416,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/02/多线程实现生产者和消费者/" rel="next" title="多线程实现生产者和消费者">
-                <i class="fa fa-chevron-left"></i> 多线程实现生产者和消费者
+              <a href="/2017/03/02/Volatile 和 synchronized的区别/" rel="next" title="Volatile 和synchronize的区别">
+                <i class="fa fa-chevron-left"></i> Volatile 和synchronize的区别
               </a>
             
           </div>
@@ -426,8 +426,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/01/jvm-垃圾回收和内存分配策略/" rel="prev" title="jvm 垃圾回收和内存分配策略">
-                jvm 垃圾回收和内存分配策略 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/02/多线程实现生产者和消费者/" rel="prev" title="多线程实现生产者和消费者">
+                多线程实现生产者和消费者 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -477,10 +477,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -489,8 +489,8 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
-               alt="John Doe" />
-          <p class="site-author-name" itemprop="name">John Doe</p>
+               alt="Gavin" />
+          <p class="site-author-name" itemprop="name">Gavin</p>
           <p class="site-description motion-element" itemprop="description"></p>
         </div>
         <nav class="site-state motion-element">
@@ -498,8 +498,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">99</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -508,7 +508,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">14</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -517,7 +517,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags">
                 <span class="site-state-item-count">47</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -596,12 +596,12 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">John Doe</span>
+  <span class="author" itemprop="copyrightHolder">Gavin</span>
 </div>
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
