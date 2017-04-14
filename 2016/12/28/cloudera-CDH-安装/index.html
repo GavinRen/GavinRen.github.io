@@ -1,0 +1,928 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hadoop,CDH 安装," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=" />
+
+
+
+
+
+
+<meta name="description" content="1 Cloudera CDH 简介1.1 CDH和CMCDH一个对ApacheHadoop的集成环境的封装，可以使用Cloudera Manager进行自动化安装。 Cloudera-Managerceql(本文中简称CM)是一个工具，CM能够管理一个大的Hadoop cluster并不是一只要下载tar files什么压缩并启动services这么简单。后续有非常多设定、监控等麻烦的事要处理，C">
+<meta name="keywords" content="Hadoop,CDH 安装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cloudera CDH 安装">
+<meta property="og:url" content="http://messor.cc/2016/12/28/cloudera-CDH-安装/index.html">
+<meta property="og:site_name" content="任贵福">
+<meta property="og:description" content="1 Cloudera CDH 简介1.1 CDH和CMCDH一个对ApacheHadoop的集成环境的封装，可以使用Cloudera Manager进行自动化安装。 Cloudera-Managerceql(本文中简称CM)是一个工具，CM能够管理一个大的Hadoop cluster并不是一只要下载tar files什么压缩并启动services这么简单。后续有非常多设定、监控等麻烦的事要处理，C">
+<meta property="og:updated_time" content="2016-12-28T09:18:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cloudera CDH 安装">
+<meta name="twitter:description" content="1 Cloudera CDH 简介1.1 CDH和CMCDH一个对ApacheHadoop的集成环境的封装，可以使用Cloudera Manager进行自动化安装。 Cloudera-Managerceql(本文中简称CM)是一个工具，CM能够管理一个大的Hadoop cluster并不是一只要下载tar files什么压缩并启动services这么简单。后续有非常多设定、监控等麻烦的事要处理，C">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Gavin'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://messor.cc/2016/12/28/cloudera-CDH-安装/"/>
+
+
+
+
+
+  <title> cloudera CDH 安装 | 任贵福 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9647bc372a67bdea02f85a7fec3e2c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">任贵福</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://messor.cc/2016/12/28/cloudera-CDH-安装/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gavin">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/portrait.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="任贵福">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="任贵福" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                cloudera CDH 安装
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T11:05:00+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/28/cloudera-CDH-安装/" class="leancloud_visitors" data-flag-title="cloudera CDH 安装">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-Cloudera-CDH-简介"><a href="#1-Cloudera-CDH-简介" class="headerlink" title="1 Cloudera CDH 简介"></a>1 Cloudera CDH 简介</h2><h3 id="1-1-CDH和CM"><a href="#1-1-CDH和CM" class="headerlink" title="1.1 CDH和CM"></a>1.1 CDH和CM</h3><p>CDH一个对ApacheHadoop的集成环境的封装，可以使用Cloudera Manager进行自动化安装。</p>
+<p>Cloudera-Managerceql(本文中简称CM)是一个工具，CM能够管理一个大的Hadoop cluster并不是一只要下载tar files什么压缩并启动services这么简单。后续有非常多设定、监控等麻烦的事要处理，CM都能够做到，有些类似Casti。Cloudera Manager整合了一列的功能让系统管理者能更方便的维护Hadoop。<br><a id="more"></a></p>
+<h3 id="1-2-CDH的主要功能"><a href="#1-2-CDH的主要功能" class="headerlink" title="1.2 CDH的主要功能"></a>1.2 CDH的主要功能</h3><ul>
+<li>管理</li>
+<li>监控</li>
+<li>诊断</li>
+<li>集成<h3 id="1-3-CDH的主要组件简要介绍"><a href="#1-3-CDH的主要组件简要介绍" class="headerlink" title="1.3 CDH的主要组件简要介绍"></a>1.3 CDH的主要组件简要介绍</h3><h4 id="1-3-1-HDFS"><a href="#1-3-1-HDFS" class="headerlink" title="1.3.1 HDFS"></a>1.3.1 HDFS</h4>Hadoop分布式文件系统(HDFS)被设计成适合运行在通用硬件(commodity hardware)上的分布式文件系统。HDFS是一个高度容错性的系统，适合部署在廉价的机器上。HDFS能提供高吞吐量的数据访问，非常适合大规模数据集上的应用。HDFS放宽了一部分POSIX约束，来实现流式读取文件系统数据的目的。HDFS是Apache Hadoop Core项目的一部分。<h4 id="1-3-2-MapReduce"><a href="#1-3-2-MapReduce" class="headerlink" title="1.3.2 MapReduce"></a>1.3.2 MapReduce</h4>MapReduce是一种编程模型，用于大规模数据集（大于1TB）的并行运算。概念”Map（映射）”和”Reduce（归约）”。 当前的软件实现是指定一个Map（映射）函数，用来把一组键值对映射成一组新的键值对，指定并发的Reduce（归约）函数，用来保证所有映射的键值对中的每一个共享相同的键组。<br>MapReduce更多运行于离线系统，而实时计算，可以使用Storm。<h4 id="1-3-3-HBase"><a href="#1-3-3-HBase" class="headerlink" title="1.3.3 HBase"></a>1.3.3 HBase</h4>Hbase是Bigtable的开源山寨版本。是建立的Hdfs之上，提供高可靠性、高性能、列存储、可伸缩、实时读写的数据库系统。<br>它介于Bosql和RDBMS之间，仅能通过主键(row key)和主键的Range来检索数据，仅支持单行事务(可通过Hive支持来实现多表Join等复杂操作)。主要用来存储非结构化和半结构化的松散数据a。<br>与Hadoop一样，Hbase目标主要依靠横向扩展，通过不断增加廉价的商用服务器，来增加计算和存储能力。<h4 id="1-3-4-Hive"><a href="#1-3-4-Hive" class="headerlink" title="1.3.4 Hive"></a>1.3.4 Hive</h4>Hive是一个基于Hadoop的开源数据仓库工具，用于存储和处理海量结构化数据。它把海量数据存储于 Hadoop 文件系统，而不是数据库，但提供了一套类数据库的数据存储和处理机制，并采用 HQL（类SQL）语言对这些数据进行自动化管理和处理。我们可以把 Hive中海量结构化数据看成一个个的表，而实际上这些数据是分布式存储在 HDFS中的。Hive经过对语句进行解析和转换，最终生成一系列基于 hadoop 的 Map/Reduce 任务，通过执行这些任务完成数据处理。<h4 id="1-3-4-Hue"><a href="#1-3-4-Hue" class="headerlink" title="1.3.4 Hue"></a>1.3.4 Hue</h4>　Hue是CDH专门的一套WEB管理器， 它包括3个部分Hue Ui，HueServer，Hue db。Hue提供所有的CDH组件的Shell界面的接口。你可以在Hue编写MR，查看修改HDFS的文件，管理Hive的元数据，运行Sqoop，编写Oozie工作流等大量工作。<h4 id="1-3-5-Impala"><a href="#1-3-5-Impala" class="headerlink" title="1.3.5 Impala"></a>1.3.5 Impala</h4></li>
+</ul>
+<p>Impala对你存储在Apache Hadoop在HDFS，HBase的数据提供直接查询互动的SQL。除了像Hive使用相同的统一存储平台，Impala也使用相同的元数据，SQL语法（Hive SQL），ODBC驱动程序和用户界面（Hue Beeswax）。Impala还提供了一个熟悉的面向批量或实时查询和统一平台。</p>
+<h4 id="1-3-6-Oozie"><a href="#1-3-6-Oozie" class="headerlink" title="1.3.6 Oozie"></a>1.3.6 Oozie</h4><p>Oozie是Yahoo针对Apache Hadoop开发的一个开源工作流引擎。用于管理和协调运行在Hadoop平台上（包括：HDFS、Pig和MapReduce）的Jobs。Oozie是专为雅虎的全球大规模复杂工作流程和数据管道而设计。</p>
+<h4 id="1-3-7-Solr"><a href="#1-3-7-Solr" class="headerlink" title="1.3.7 Solr"></a>1.3.7 Solr</h4><p>Solr是一个基于Lucene的Java搜索引擎服务器。Solr 提供了层面搜索、命中醒目显示并且支持多种输出格式（包括 XML/XSLT 和 JSON 格式）。它易于安装和配置，而且附带了一个基于 HTTP 的管理界面。Solr已经在众多大型的网站中使用，较为成熟和稳定。Solr 包装并扩展了 Lucene，所以Solr的基本上沿用了Lucene的相关术语。更重要的是，Solr 创建的索引与 Lucene 搜索引擎库完全兼容。通过对 Solr 进行适当的配置，某些情况下可能需要进行编码，Solr 可以阅读和使用构建到其他 Lucene 应用程序中的索引。此外，很多 Lucene 工具（如Nutch、 Luke）也可以使用 Solr 创建的索引。</p>
+<h4 id="1-3-8-Sqoop"><a href="#1-3-8-Sqoop" class="headerlink" title="1.3.8 Sqoop"></a>1.3.8 Sqoop</h4><p>Sqoop中一大亮点就是可以通过hadoop的mapreduce把数据从关系型数据库中导入数据到HDFS。sqoop架构非常简单，其整合了Hive、Hbase和Oozie，通过map-reduce任务来传输数据，从而提供并发特性和容错。sqoop主要通过JDBC和关系数据库进行交互。理论上支持JDBC的database都可以使用sqoop和hdfs进行数据交互。</p>
+<h4 id="1-3-9-YARN"><a href="#1-3-9-YARN" class="headerlink" title="1.3.9 YARN"></a>1.3.9 YARN</h4><p>YARN可以理解为是Hadoop MapReduceV2版本，YARN重构根本的思想是将 JobTracker两个主要的功能分离成单独的组件，这两个功能是资源管理和任务调度/监控。新的资源管理器全局管理所有应用程序计算资源的分配，每一个应用的ApplicationMaster负责相应的调度和协调。一个应用程序无非是一个单独的传统的 MapReduce 任务或者是一个 DAG( 有向无环图)任务。ResourceManager 和每一台机器的节点管理服务器能够管理用户在那台机器上的进程并能对计算进行组织。<br>事实上，每一个应用的ApplicationMaster 是一个详细的框架库，它结合从 ResourceManager 获得的资源和 NodeManager协同工作来运行和监控任务。</p>
+<h4 id="1-3-10-Zookeeper"><a href="#1-3-10-Zookeeper" class="headerlink" title="1.3.10 Zookeeper"></a>1.3.10 Zookeeper</h4><p>Zookeeper 分布式服务框架是 Apache Hadoop的一个子项目，它主要是用来解决分布式应用中经常遇到的一些数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。<br>Zookeeper 作为一个分布式的服务框架，主要用来解决分布式集群中应用系统的一致性问题，它能提供基于类似于文件系统的目录节点树方式的数据存储，但是 Zookeeper 并不是用来专门存储数据的，它的作用主要是用来维护和监控你存储的数据的状态变化。通过监控这些数据状态的变化，从而可以达到基于数据的集群管理。</p>
+<h4 id="1-3-9-Spark"><a href="#1-3-9-Spark" class="headerlink" title="1.3.9 Spark"></a>1.3.9 Spark</h4><p>Spark是UC Berkeley AMP lab所开源的类Hadoop MapReduce的通用的并行计算框架，Spark基于mapreduce算法实现的分布式计算，拥有Hadoop MapReduce所具有的优点；但不同于MapReduce的是Job中间输出结果可以保存在内存中，从而不再需要读写HDFS，因此Spark能更好地适用于数据挖掘与机器学习等需要迭代的map reduce的算法。<br>Spark和Storm类似，都是基于内存的运行，不确定哪种方式在数据吞吐量上要具优势，不过Storm计算时间延迟要小。</p>
+<h2 id="2-准备工作：系统环境搭建"><a href="#2-准备工作：系统环境搭建" class="headerlink" title="2 准备工作：系统环境搭建"></a>2 准备工作：系统环境搭建</h2><p>以下操作均在root用户下操作</p>
+<h3 id="2-1-安装Ubuntu14-04系统"><a href="#2-1-安装Ubuntu14-04系统" class="headerlink" title="2.1 安装Ubuntu14.04系统"></a>2.1 安装Ubuntu14.04系统</h3><p>注意在分区时一定要把硬盘空间主要分到/根节点下，因为采用Cloudera Manger 的在线安装方式，是把所有的软件安装在根节点下面</p>
+<h3 id="2-2-设置hosts（所有节点）"><a href="#2-2-设置hosts（所有节点）" class="headerlink" title="2.2 设置hosts（所有节点）"></a>2.2 设置hosts（所有节点）</h3><p><code>root@master:sudo vi /etc/hosts</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.10    mster</div><div class="line">192.168.1.11    slave1</div><div class="line">192.168.1.12    slave2</div><div class="line">192.168.1.13    slave3</div></pre></td></tr></table></figure>
+<h3 id="2-3-设置静态IP（所有节点）"><a href="#2-3-设置静态IP（所有节点）" class="headerlink" title="2.3 设置静态IP（所有节点）"></a>2.3 设置静态IP（所有节点）</h3><p><code>root@master:sudo vi /etc/network/interfaces</code><br>添加如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">auto eth0</div><div class="line">iface eth0 inet static</div><div class="line">address 192.168.0.117</div><div class="line">gateway 192.168.0.1 #</div><div class="line">netmask 255.255.255.0</div></pre></td></tr></table></figure>
+<h3 id="2-4-关闭防火墙（所有节点）"><a href="#2-4-关闭防火墙（所有节点）" class="headerlink" title="2.4 关闭防火墙（所有节点）"></a>2.4 关闭防火墙（所有节点）</h3><p><code>root@master:ufw disable</code></p>
+<h3 id="2-5-安装Oracle-JDK-7（所有节点）"><a href="#2-5-安装Oracle-JDK-7（所有节点）" class="headerlink" title="2.5 安装Oracle JDK 7（所有节点）"></a>2.5 安装Oracle JDK 7（所有节点）</h3><p>CDH要求至少是Oracle JDK7<br>Ubuntu自带的是OpenJDK，而Ubuntu没有自带的Oracle JDK,需要添加PPP源<br>添加 PPA repository 到系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">root@master:add-apt-repository ppa:webupd8team/java</div><div class="line">root@master:apt-get update</div><div class="line">root@master:sudo apt-get upgrade</div><div class="line">root@master:apt-get install oracle-java7-installer</div><div class="line">root@master:apt-get install oracle-java7-set-default</div><div class="line">root@master:java -version</div></pre></td></tr></table></figure></p>
+<h3 id="2-6-设置所有节点免密码SSH登陆（所有节点）"><a href="#2-6-设置所有节点免密码SSH登陆（所有节点）" class="headerlink" title="2.6  设置所有节点免密码SSH登陆（所有节点）"></a>2.6  设置所有节点免密码SSH登陆（所有节点）</h3><p>使用ssh-keygen 和ssh-copy-id 实现SSH无密码登陆<br>2.6.1 在各个节点使用产生公钥私钥对<br><code>bigdata@master:ssh-keygen -t rsa -P</code><br>2.6.2 将各个节点上公钥复制到主节点<br>    <code>bigdata@slave1:ssh-copy-id -i ~/.ssh/id_rsa.pub  master</code><br>2.6.3. 查看各个节点的公钥是否追加到了主节点上<br>    <code>bigdata@master:cat ~/.ssh/authorized_keys</code><br>2.6.4. 把主节点上的authorized_keys文件发送到各个节点实现无密码登陆<br>    <code>bigdata@master:scp ~/.ssh/authorized_keys bigdata@slave1:/home/bigdata/.ssh/</code><br>2.6.5. 修改ssh配置文件使能够在root用户也能免密码采用(所有节点）不然后面安装会报错<br>    <code>root@master:vi /etc/ssh/sshd_config</code><br>    找到<code>PermitRootlogin</code> 一行把后面修改成yes<br>2.6.6 重启ssh<br>    <code>/etc/init.d/ssh restart</code>或者<code>service ssh restart</code><br>    注意查看ssh是否启动成功</p>
+<h3 id="2-7-建立数据库（仅主机）"><a href="#2-7-建立数据库（仅主机）" class="headerlink" title="2.7 建立数据库（仅主机）"></a>2.7 建立数据库（仅主机）</h3><p>数据库用来存储Cloudera Manager 的配置信息和集群状况和任务进程的信息，用来管理整个集群。所以采用最方便的MySQL</p>
+<p>####2.7.1. 安装MySQL：<br><code>root@master:apt-get install mysql-server</code></p>
+<p>####2.7.2 配置MySQL</p>
+<pre><code>1.先停止MySQL服务：
+</code></pre><p><code>root@master:service mysql stop</code></p>
+<pre><code>2. 先备份MySQL文件：
+</code></pre><p><code>root@master:cp /etc/mysql/my.cnf /etc/mysql/my.cnf.bak</code></p>
+<pre><code>3. 修改配置文件：
+</code></pre><p><code>root@master:vi /etc/mysql/my.cnf</code><br>    按照下面的配置对主机的配置进行修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div></pre></td><td class="code"><pre><div class="line"> [client]</div><div class="line">default-character-set=utf8</div><div class="line">port		= 3306</div><div class="line">socket		= /var/run/mysqld/mysqld.sock</div><div class="line"># Here is entries for some specific programs</div><div class="line"># The following values assume you have at least 32M ram</div><div class="line"># This was formally known as [safe_mysqld]. Both versions are currently parsed.</div><div class="line">[mysqld_safe]</div><div class="line">log-error=/var/log/mysqld.log</div><div class="line">pid-file=/var/run/mysqld/mysqld.pid</div><div class="line">socket		= /var/run/mysqld/mysqld.sock</div><div class="line">nice		= 0</div><div class="line">[mysqld]</div><div class="line">transaction-isolation=READ-COMMITTED</div><div class="line">#</div><div class="line"># * Basic Settings</div><div class="line">#</div><div class="line">character-set-server=utf8</div><div class="line">user		= mysql</div><div class="line">pid-file	= /var/run/mysqld/mysqld.pid</div><div class="line">socket		= /var/run/mysqld/mysqld.sock</div><div class="line">port		= 3306</div><div class="line">basedir		= /usr</div><div class="line">datadir		= /var/lib/mysql</div><div class="line">tmpdir		= /tmp</div><div class="line">lc-messages-dir	= /usr/share/mysql</div><div class="line">skip-external-locking</div><div class="line"># Instead of skip-networking the default is now to listen only on</div><div class="line"># localhost which is more compatible and is not less secure.</div><div class="line">bind-address		= 0.0.0.0</div><div class="line">#</div><div class="line"># * Fine Tuning</div><div class="line">#</div><div class="line">key_buffer		= 16M</div><div class="line">key_buffer_size         = 32M</div><div class="line">max_allowed_packet	= 32M</div><div class="line">thread_stack		= 256K</div><div class="line">thread_cache_size       = 64</div><div class="line"></div><div class="line"># This replaces the startup script and     checks MyISAM tables if needed</div><div class="line"># the first time they are touched</div><div class="line">myisam-recover         = BACKUP</div><div class="line">max_connections        = 550</div><div class="line">#table_cache            = 64</div><div class="line">#thread_concurrency     = 10</div><div class="line">#</div><div class="line"># * Query Cache Configuration</div><div class="line">#</div><div class="line">query_cache_limit       = 8M</div><div class="line">query_cache_size        = 64M</div><div class="line">query_cache_type        = 1</div><div class="line">#</div><div class="line"># * Logging and Replication</div><div class="line">#</div><div class="line"># Both location gets rotated by the cronjob.</div><div class="line"># Be aware that this log type is a performance killer.</div><div class="line"># As of 5.1 you can enable the log at runtime!</div><div class="line">#general_log_file        = /var/log/mysql/mysql.log</div><div class="line">#general_log             = 1</div><div class="line">#</div><div class="line"># Error log - should be very few entries.</div><div class="line">#</div><div class="line">log_error = /var/log/mysql/error.log</div><div class="line">#</div><div class="line"># Here you can see queries with especially         long duration</div><div class="line">#log_slow_queries	=     /var/log/mysql/mysql-slow.log</div><div class="line">#long_query_time = 2</div><div class="line">#log-queries-not-using-indexes</div><div class="line">#</div><div class="line"># The following can be used as easy to replay backup logs or for replication.</div><div class="line"># note: if you are setting up a replication slave, see README.Debian about</div><div class="line">#       other settings you may need to change.</div><div class="line">#server-id		= 1</div><div class="line">log_bin			= /var/log/mysql/mysql-bin.log</div><div class="line">expire_logs_days	= 10</div><div class="line">max_binlog_size         = 100M</div><div class="line">binlog_format           = mixed</div><div class="line">read_buffer_size = 2M</div><div class="line">read_rnd_buffer_size = 16M</div><div class="line">sort_buffer_size = 8M</div><div class="line">join_buffer_size = 8M</div><div class="line">#binlog_do_db		= include_database_name</div><div class="line">#binlog_ignore_db	= include_database_name</div><div class="line">#</div><div class="line"># * InnoDB</div><div class="line">#</div><div class="line"># InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.</div><div class="line"># Read the manual for more InnoDB related options. There are many!</div><div class="line">#</div><div class="line">#default-storage-engine = INNODB</div><div class="line">#innodb_file_per_table = 1</div><div class="line">innodb_flush_log_at_trx_commit  = 2</div><div class="line">innodb_log_buffer_size          = 64M</div><div class="line">innodb_buffer_pool_size         = 4G</div><div class="line">innodb_thread_concurrency       = 8</div><div class="line">innodb_flush_method             = O_DIRECT</div><div class="line">innodb_log_file_size = 512M</div><div class="line"># * Security Features</div><div class="line">#</div><div class="line"># Read the manual, too, if you want chroot!</div><div class="line"># chroot = /var/lib/mysql/</div><div class="line">#</div><div class="line"># For generating SSL certificates I recommend the OpenSSL GUI &quot;tinyca&quot;.</div><div class="line">#</div><div class="line"># ssl-ca=/etc/mysql/cacert.pem</div><div class="line"># ssl-cert=/etc/mysql/server-cert.pem</div><div class="line"># ssl-key=/etc/mysql/server-key.pem</div><div class="line">[mysqldump]</div><div class="line">quick</div><div class="line">quote-names</div><div class="line">max_allowed_packet	= 16M</div><div class="line">[mysql]</div><div class="line">#no-auto-rehash	# faster start of mysql but no tab completition</div><div class="line"></div><div class="line">[isamchk]</div><div class="line">key_buffer		= 16M</div><div class="line">#</div><div class="line"># * IMPORTANT: Additional settings that can override those from this file!</div><div class="line">#   The files must end with &apos;.cnf&apos;, otherwise they&apos;ll be ignored.</div><div class="line">#</div><div class="line">!includedir /etc/mysql/conf.d/</div></pre></td></tr></table></figure>
+<pre><code>4. 删除旧的InnoDB 日志文件否则无法启动MySQL
+</code></pre><p><code>root@master:rm /var/lib/mysql/lib_logfile0</code><br><code>root@master:rm /var/lib/mysql/lib_logfile1</code></p>
+<pre><code>5. 启动MySQL
+</code></pre><p><code>root@master:service mysql start</code></p>
+<pre><code>6. 安装MySQL JDBC驱动
+</code></pre><p><code>root@master:apt-get install libmysql-java</code></p>
+<pre><code>7.查看3306端口来检测MySQL是否启动
+</code></pre><p><code>root@master:netstat -tulpn | grep :3306</code></p>
+<pre><code>8.创建后继安装的需要的数据库，不过目前这一环节可以放在后面使用数据库是再建立,下面给出创建后面需要的数据库的例子：
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">root@master:mysql -u root -p</div><div class="line">## Cloudera manager db user, database and grant</div><div class="line">mysql&gt; create user &apos;cmf&apos;@&apos;%&apos; identified by &apos;xyz&apos;;</div><div class="line">mysql&gt; create database cmf  DEFAULT CHARACTER SET utf8 COLLATE     utf8_general_ci;</div><div class="line">mysql&gt; grant all privileges on cmf.* to &apos;cmf&apos;@&apos;%&apos; identified by &apos;xyz&apos;; </div><div class="line">## For activity monitor</div><div class="line">mysql&gt; create user &apos;amon&apos;@&apos;%&apos; identified by &apos;xyz&apos;; </div><div class="line">mysql&gt; create database amon  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;</div><div class="line">mysql&gt; grant all privileges on amon.* to &apos;amon&apos;@&apos;%&apos; identified by &apos;xyz&apos;; </div><div class="line">## Hive Meta store </div><div class="line">mysql&gt; create user &apos;hive&apos;@&apos;%&apos; identified by &apos;xyz&apos;; </div><div class="line"> </div><div class="line">mysql&gt; create database metastore  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;</div><div class="line"> </div><div class="line">mysql&gt; grant all privileges on metastore.* to &apos;hive&apos;@&apos;%&apos; identified by &apos;xyz&apos;; </div><div class="line">## Flush all changes </div><div class="line">mysql&gt; FLUSH PRIVILEGES;</div></pre></td></tr></table></figure>
+<h3 id="2-8-升级Ubuntu的utils包-所有节点）"><a href="#2-8-升级Ubuntu的utils包-所有节点）" class="headerlink" title="2.8 升级Ubuntu的utils包(所有节点）"></a>2.8 升级Ubuntu的utils包(所有节点）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root@master:wget http://ftp.cn.debian.org/debian/pool/main/f/fuse/fuse-utils_2.9.0-2+deb7u1_all.deb</div><div class="line">root@master:~# dpkg -i fuse-utils_2.9.0-2+deb7u1_all.deb</div></pre></td></tr></table></figure>
+<h2 id="3-搭建Cloudera-CDH"><a href="#3-搭建Cloudera-CDH" class="headerlink" title="3 搭建Cloudera CDH"></a>3 搭建Cloudera CDH</h2><h3 id="3-1-将CDH5的软件源添加到Apt中（所有节点）"><a href="#3-1-将CDH5的软件源添加到Apt中（所有节点）" class="headerlink" title="3.1 将CDH5的软件源添加到Apt中（所有节点）"></a>3.1 将CDH5的软件源添加到Apt中（所有节点）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> root@master: curl &quot;http://archive.cloudera.com/cm5/ubuntu/trusty/amd64/cm/cloudera.list&quot; -o /etc/apt/sources.list.d/cloudera_trusty.list</div><div class="line"> root@master: curl -s http://archive.cloudera.com/cdh5/ubuntu/trusty/amd64/cdh/archive.key | sudo apt-key add -</div><div class="line">root@master: apt-get update</div></pre></td></tr></table></figure>
+<h3 id="3-2-安装Cloudera-Manager-所有节点）"><a href="#3-2-安装Cloudera-Manager-所有节点）" class="headerlink" title="3.2 安装Cloudera Manager(所有节点）"></a>3.2 安装Cloudera Manager(所有节点）</h3><p><code>root@mater:~# apt-get install cloudera-manager-daemons cloudera-manager-server</code></p>
+<h3 id="3-3-修改Cloudera-Manager-Server的配置文件"><a href="#3-3-修改Cloudera-Manager-Server的配置文件" class="headerlink" title="3.3 修改Cloudera-Manager-Server的配置文件"></a>3.3 修改Cloudera-Manager-Server的配置文件</h3><pre><code>修改Cloudera-Manager-Server的配置文件db.properties,设置刚才我们在Mysql中创建的cmf数据库、用户名、密码
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">root@master:vi /etc/cloudera-scm-server/db.properties </div><div class="line">   #使用mysql 来管理cloudera-manager </div><div class="line">   com.cloudera.cmf.db.type=mysql</div><div class="line">   com.cloudera.cmf.db.host=master</div><div class="line">   com.cloudera.cmf.db.name=cmf</div><div class="line">   com.cloudera.cmf.db.user=cmf</div><div class="line">   com.cloudera.cmf.db.password=xyz</div></pre></td></tr></table></figure>
+<h3 id="3-4-设置集群时间同步-所有节点）"><a href="#3-4-设置集群时间同步-所有节点）" class="headerlink" title="3.4 设置集群时间同步(所有节点）"></a>3.4 设置集群时间同步(所有节点）</h3><p><code>root@mater: apt-get install ntp</code></p>
+<h3 id="3-5-主节点启动Cloudera-Manager-Server"><a href="#3-5-主节点启动Cloudera-Manager-Server" class="headerlink" title="3.5 主节点启动Cloudera Manager Server"></a>3.5 主节点启动Cloudera Manager Server</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root@mater:~# service cloudera-scm-server start </div><div class="line">Starting cloudera-scm-server: * cloudera-scm-server started</div></pre></td></tr></table></figure>
+<pre><code>查看Cloudera manager的启动日志，看是否启动成功
+</code></pre><p><code>tailf -100 /var/log/cloudera-scm-server/cloudera-scm-server.log</code></p>
+<h3 id="3-6-从节点启动Cloudera-Manager-Client"><a href="#3-6-从节点启动Cloudera-Manager-Client" class="headerlink" title="3.6 从节点启动Cloudera Manager Client"></a>3.6 从节点启动Cloudera Manager Client</h3><p><code>root@master:service cloudera-scm-agent start</code></p>
+<pre><code>查看cloudera agent的启动日志，
+</code></pre><h3 id="3-7-通过Web方式继续安装"><a href="#3-7-通过Web方式继续安装" class="headerlink" title="3.7 通过Web方式继续安装"></a>3.7 通过Web方式继续安装</h3><p>3.7.1创建update-alternatives工具在/usr/sbin/下创建软链</p>
+<p><code>root@m1:~# sudo ln -s /usr/bin/update-alternatives /usr/sbin/update-alternatives</code></p>
+<p>3.7.2 打开浏览器，输入 <a href="http://master:7180/" target="_blank" rel="external">http://master:7180/</a> 开始安装</p>
+<p>初始账号和密码都是admin</p>
+<p>3.7.3 选择安装的CDH版本</p>
+<p>安装Cloudera Express版本<br>3.7.4 为CDH安装指定主机</p>
+<p>选择IP进行搜索就行</p>
+<p>3.7.5 选择安装方式</p>
+<p>选择方法采用Pacrcel方式<br>选择安装Agent为cloudera Manager Server 的匹配发行版</p>
+<p>3.7.6 指定主机的SSH登录方式</p>
+<p>通过root用户，采用密码方式密码设为bigdata</p>
+<p>3.7.7 安装过程中常见问题</p>
+<p><strong><em>此时如果出现无法启动hosts之类的问题，查看ssh的配置文件是否更改为允许root用户登陆</em></strong></p>
+<p><strong><em>如果出现检测不到agent，首先查看IP地址是否正确查看cloudera-scm-agent 是否启动。如果没有启动查看日志</em></strong></p>
+<p>3.7.8出现<code>ImportError: No module named _io</code>错误</p>
+<p>这是因为CDH5使用的Python版本问题。执行完下面的脚本后，点击重试就可以顺利的完成安装了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root@master:~# mv /usr/lib/cmf/agent/build/env/bin/python /usr/lib/cmf/agent/build/env/bin/python.bak</div><div class="line">root@master:~# cp /usr/bin/python2.7 /usr/lib/cmf/agent/build/env/bin/python</div></pre></td></tr></table></figure></p>
+<p>3.7.9继续安装群集安装成功之后检测主机性能时<br>出现Cloudera 建议将 /proc/sys/vm/swappiness 设置为 0。<br>修改swappiness的值为零：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@master:cat /proc/sys/vm/swappiness</div><div class="line">root@master:sysctl vm.swappiness=0</div><div class="line">root@master:echo 0 &gt; /proc/sys/vm/swappiness</div></pre></td></tr></table></figure></p>
+<p>3.7.10数据库设置</p>
+<p>此时用到的数据库正是我们前面创建的数据库</p>
+<h2 id="4-向集群添加节点："><a href="#4-向集群添加节点：" class="headerlink" title="4 向集群添加节点："></a>4 向集群添加节点：</h2><p>4.1 在主机上重复搭建环境部分中的1-6步和第8步，不需要建立mysql<br>4.2 重复搭建Cloudera CDH环节中的第1步、第4步、第7步。<br>4.3 把主机<code>/opt/cloudera/parcels</code>复制到从节点相应的目录<br>4.4 在管理界面点击向集群添加主机<br>4.5 此后按照之前的方法进行安装</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+            <a href="/tags/CDH-安装/" rel="tag"># CDH 安装</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/28/拉格朗日乘子法/" rel="next" title="拉格朗日乘子法">
+                <i class="fa fa-chevron-left"></i> 拉格朗日乘子法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/12/奇异值分解/" rel="prev" title="奇异值分解">
+                奇异值分解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/portrait.jpg"
+               alt="Gavin" />
+          <p class="site-author-name" itemprop="name">Gavin</p>
+          <p class="site-description motion-element" itemprop="description">努力的小仓鼠</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">文章</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/GavinRen" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2346258975" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Cloudera-CDH-简介"><span class="nav-number">1.</span> <span class="nav-text">1 Cloudera CDH 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-CDH和CM"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 CDH和CM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-CDH的主要功能"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 CDH的主要功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-CDH的主要组件简要介绍"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 CDH的主要组件简要介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-HDFS"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1 HDFS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-MapReduce"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2 MapReduce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-3-HBase"><span class="nav-number">1.3.3.</span> <span class="nav-text">1.3.3 HBase</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-4-Hive"><span class="nav-number">1.3.4.</span> <span class="nav-text">1.3.4 Hive</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-4-Hue"><span class="nav-number">1.3.5.</span> <span class="nav-text">1.3.4 Hue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-5-Impala"><span class="nav-number">1.3.6.</span> <span class="nav-text">1.3.5 Impala</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-6-Oozie"><span class="nav-number">1.3.7.</span> <span class="nav-text">1.3.6 Oozie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-7-Solr"><span class="nav-number">1.3.8.</span> <span class="nav-text">1.3.7 Solr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-8-Sqoop"><span class="nav-number">1.3.9.</span> <span class="nav-text">1.3.8 Sqoop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-9-YARN"><span class="nav-number">1.3.10.</span> <span class="nav-text">1.3.9 YARN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-10-Zookeeper"><span class="nav-number">1.3.11.</span> <span class="nav-text">1.3.10 Zookeeper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-9-Spark"><span class="nav-number">1.3.12.</span> <span class="nav-text">1.3.9 Spark</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-准备工作：系统环境搭建"><span class="nav-number">2.</span> <span class="nav-text">2 准备工作：系统环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-安装Ubuntu14-04系统"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 安装Ubuntu14.04系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-设置hosts（所有节点）"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 设置hosts（所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-设置静态IP（所有节点）"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 设置静态IP（所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-关闭防火墙（所有节点）"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 关闭防火墙（所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-安装Oracle-JDK-7（所有节点）"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 安装Oracle JDK 7（所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-设置所有节点免密码SSH登陆（所有节点）"><span class="nav-number">2.6.</span> <span class="nav-text">2.6  设置所有节点免密码SSH登陆（所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-建立数据库（仅主机）"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 建立数据库（仅主机）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-升级Ubuntu的utils包-所有节点）"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 升级Ubuntu的utils包(所有节点）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-搭建Cloudera-CDH"><span class="nav-number">3.</span> <span class="nav-text">3 搭建Cloudera CDH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-将CDH5的软件源添加到Apt中（所有节点）"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 将CDH5的软件源添加到Apt中（所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-安装Cloudera-Manager-所有节点）"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 安装Cloudera Manager(所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-修改Cloudera-Manager-Server的配置文件"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 修改Cloudera-Manager-Server的配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-设置集群时间同步-所有节点）"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 设置集群时间同步(所有节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-主节点启动Cloudera-Manager-Server"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 主节点启动Cloudera Manager Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-从节点启动Cloudera-Manager-Client"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 从节点启动Cloudera Manager Client</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-通过Web方式继续安装"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 通过Web方式继续安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-向集群添加节点："><span class="nav-number">4.</span> <span class="nav-text">4 向集群添加节点：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gavin</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v="></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v="></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v="></script>
+<script type="text/javascript" src="/js/src/post-details.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v="></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("ekRpEBkGKhXrKS60nmRy2JkH-gzGzoHsz", "Yd08BDv0W3Rl0Td6N1WC2L9H");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+
+</body>
+</html>

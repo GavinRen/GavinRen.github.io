@@ -1,0 +1,905 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=" />
+
+
+
+
+
+
+<meta name="description" content="概述这几天老是被问到MySQL索引问题，之前也是知道一点索引的概念，但是具体的就不了解了，所以总结了一下。 索引的目的索引用来加快数据库中的查询速度，就相比查字典先查索引一样，这样的话可以让你很快定位到你要查的数据所在的位置，如果不采用索引的话，就会从第一条记录查起，然后查完整个表直到你找到要查内容，这样的事件复杂度较高达到$o(n)$.当数据表的非常大的时候就会浪费很多时间，而数据库主要的功能就">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL之索引">
+<meta property="og:url" content="http://messor.cc/2017/03/08/MySQL之索引/index.html">
+<meta property="og:site_name" content="任贵福">
+<meta property="og:description" content="概述这几天老是被问到MySQL索引问题，之前也是知道一点索引的概念，但是具体的就不了解了，所以总结了一下。 索引的目的索引用来加快数据库中的查询速度，就相比查字典先查索引一样，这样的话可以让你很快定位到你要查的数据所在的位置，如果不采用索引的话，就会从第一条记录查起，然后查完整个表直到你找到要查内容，这样的事件复杂度较高达到$o(n)$.当数据表的非常大的时候就会浪费很多时间，而数据库主要的功能就">
+<meta property="og:image" content="http://messor.cc/images/chipan1.png">
+<meta property="og:image" content="http://messor.cc/images/chipan2.png">
+<meta property="og:image" content="http://messor.cc/images/btree.jpg">
+<meta property="og:image" content="http://messor.cc/images/hashindex.jpg">
+<meta property="og:updated_time" content="2017-03-17T06:37:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL之索引">
+<meta name="twitter:description" content="概述这几天老是被问到MySQL索引问题，之前也是知道一点索引的概念，但是具体的就不了解了，所以总结了一下。 索引的目的索引用来加快数据库中的查询速度，就相比查字典先查索引一样，这样的话可以让你很快定位到你要查的数据所在的位置，如果不采用索引的话，就会从第一条记录查起，然后查完整个表直到你找到要查内容，这样的事件复杂度较高达到$o(n)$.当数据表的非常大的时候就会浪费很多时间，而数据库主要的功能就">
+<meta name="twitter:image" content="http://messor.cc/images/chipan1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Gavin'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://messor.cc/2017/03/08/MySQL之索引/"/>
+
+
+
+
+
+  <title> MySQL之索引 | 任贵福 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9647bc372a67bdea02f85a7fec3e2c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">任贵福</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://messor.cc/2017/03/08/MySQL之索引/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gavin">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/portrait.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="任贵福">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="任贵福" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MySQL之索引
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-08T15:32:00+08:00">
+                2017-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/08/MySQL之索引/" class="leancloud_visitors" data-flag-title="MySQL之索引">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>这几天老是被问到MySQL索引问题，之前也是知道一点索引的概念，但是具体的就不了解了，所以总结了一下。</p>
+<h2 id="索引的目的"><a href="#索引的目的" class="headerlink" title="索引的目的"></a>索引的目的</h2><p>索引用来加快数据库中的查询速度，就相比查字典先查索引一样，这样的话可以让你很快定位到你要查的数据所在的位置，如果不采用索引的话，就会从第一条记录查起，然后查完整个表直到你找到要查内容，这样的事件复杂度较高达到$o(n)$.当数据表的非常大的时候就会浪费很多时间，而数据库主要的功能就是查询功能。顺序查找时间复杂度高，人们自然想到采用二分查找和二叉树查找之类 的。但是这些查找方法要求数据是排序的，或者是存在二叉搜索树。所以说索引可以看成一种辅助查找的数据结构。</p>
+<a id="more"></a>
+<h2 id="索引的本质"><a href="#索引的本质" class="headerlink" title="索引的本质"></a>索引的本质</h2><p>MySQL官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构。所以说索引的本质看作是一种数据结构</p>
+<h2 id="磁盘存取原理"><a href="#磁盘存取原理" class="headerlink" title="磁盘存取原理"></a>磁盘存取原理</h2><p>索引一般以文件形式存储到磁盘上，索引检索需要磁盘I/O，所以需要理解磁盘存取原理。</p>
+<p><img src="/images/chipan1.png" alt="磁盘"></p>
+<p>一个磁盘由大小相同且同轴的圆形盘片组成，磁盘可以转动（各个磁盘必须同步转动）。在磁盘的一侧有磁头支架，磁头支架固定了一组磁头，每个磁头负责存取一个磁盘的内容。磁头不能转动，但是可以沿磁盘半径方向运动（实际是斜切向运动），每个磁头同一时刻也必须是同轴的，即从正上方向下看，所有磁头任何时候都是重叠的（不过目前已经有多磁头独立技术，可不受此限制）。</p>
+<p>下图为磁盘结构</p>
+<p><img src="/images/chipan2.png" alt="磁盘结构"></p>
+<p>盘片被划分为一系列同心圆，圆心是盘片中心，每个同心环叫做一个磁道，所有半径相同的磁道组成一个柱面。磁道被沿半径线划分成一个个小的段，每个段叫做一个扇区，每个扇区是磁盘的最小存储单元。为了简单起见，我们下面假设磁盘只有一个盘片和一个磁头。</p>
+<p>当需要从磁盘读取数据时，系统会将数据逻辑地址传给磁盘，磁盘的控制电路按照寻址逻辑将逻辑地址翻译成物理地址，即确定要读的数据在哪个磁道，哪个扇区。为了读取这个扇区的数据，需要将磁头放到这个扇区上方，为了实现这一点，磁头需要移动对准相应磁道，这个过程叫做寻道，所耗费时间叫做寻道时间，然后磁盘旋转将目标扇区旋转到磁头下，这个过程耗费的时间叫做旋转时间。</p>
+<h3 id="局部性原理与磁盘预读"><a href="#局部性原理与磁盘预读" class="headerlink" title="局部性原理与磁盘预读"></a>局部性原理与磁盘预读</h3><p>由于存储介质的特性，磁盘本身存取就比主存慢很多，再加上机械运动耗费，磁盘的存取速度往往是主存的几百分分之一，因此为了提高效率，要尽量减少磁盘I/O。为了达到这个目的，磁盘往往不是严格按需读取，而是每次都会预读，即使只需要一个字节，磁盘也会从这个位置开始，顺序向后读取一定长度的数据放入内存。这样做的理论依据是计算机科学中著名的局部性原理：</p>
+<p>当一个数据被用到时，其附近的数据也通常会马上被使用。由于磁盘顺序读取的效率很高（不需要寻道时间，只需很少的旋转时间），因此对于具有局部性的程序来说，预读可以提高I/O效率。</p>
+<p>预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，每个存储块称为一页（在许多操作系统中，页得大小通常为4k），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。</p>
+<h2 id="索引的种类"><a href="#索引的种类" class="headerlink" title="索引的种类"></a>索引的种类</h2><p>由于MySQL中的数据实际存在磁盘中，而在磁盘的I/O消耗的时间又很多，所以索引的设计需要尽量减少的I/O的次数。</p>
+<p>常见的索引为B+-Tree、HASH索引、R-Tree(空间索引)和Full-text(全文索引)。不同的存储引擎采用的索引方式不同。B-Tree索引MyISAM引擎、InnoDB引擎和Memory引擎都支持。HASH索引只有Memory引擎支持。R-Tree索引只有MyISAM引擎支持。全文索引这三个常见的存储引擎都不支持。</p>
+<p>所以下面介绍下，B+-Tree树</p>
+<h2 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+-Tree"></a>B+-Tree</h2><p>常见的动态查找树主要有二叉查找树，平衡二叉查找树、红黑树。这些都是二叉树，其时间复杂度为$O(logN)$ 与树的深度相关，那么降低树的深度自然会提高查找效率。</p>
+<p>而在实际索引查询过程中，树节点存储的元素数量有限，这样导致二叉查找树结构由于树的深度过大而造成磁盘I/O读写过于频繁，进而导致查询效率底下。为了降低树的高度，自然想到可以采用多叉树。B+-Tree树就是多叉树的一种。</p>
+<p><img src="/images/btree.jpg" alt="B+树"></p>
+<p>如上图，是一颗B+Tree,浅蓝色的块称为一个磁盘块（磁盘块的大小是固定的，一般和磁盘中的页相同），一个磁盘块存放的是数据项（关键字信息，也可以理解为索引）和指针（分项数）。如磁盘块1包含数据项17和35，包含指针P1、P2、P3，P1表示小于17的磁盘块，P2表示在17和35之间的磁盘块，P3表示大于35的磁盘块。真实的数据存在于叶子节点即3、5、9、10、13、15、28、29、36、60、75、79、90、99。非叶子节点只不存储真实的数据，只存储指引搜索方向的数据项，如17、35并不真实存在于数据表中。</p>
+<h2 id="B-Tree树的查找过程"><a href="#B-Tree树的查找过程" class="headerlink" title="B+-Tree树的查找过程"></a>B+-Tree树的查找过程</h2><p>如果要查找数据项29</p>
+<p>步骤：</p>
+<ol>
+<li>首先会把磁盘块1由磁盘加载到内存，此时发生一次IO，在内存中用二分查找确定29在17和35之间，锁定磁盘块1的P2指针</li>
+<li>通过磁盘块1的P2指针的磁盘地址把磁盘块3由磁盘加载到内存，发生第二次IO，29在26和30之间，锁定磁盘块3的P2指针，</li>
+<li>通过指针加载磁盘块8到内存，发生第三次IO，同时内存中做二分查找找到29，结束查询，</li>
+</ol>
+<p>上面才产生了三次IO,3层的B+-Tree可以表示上百万的数据，如果上百万的数据查找只需要三次IO，性能提高是巨大的。</p>
+<h2 id="B-Tree树的性质"><a href="#B-Tree树的性质" class="headerlink" title="B+-Tree树的性质"></a>B+-Tree树的性质</h2><ol>
+<li>IO次数取决于B+-Tree的高度，假设数据表的数据为N,每个磁盘块的数据项的数量为m,则高度为$log_{m+1} N$,所以数据量N一定的情况下，m越大，h越大；而m =磁盘块的大小/数据项的大小。磁盘块的大小伟数据页的大小是固定的。如果数据项的占的空间越小，数据项的数量越多，树的高度酒低，性能越好。这就是为什么索引的选择尽量小。也是为什么把真实的数据放到叶子节点而不是内层节点。</li>
+<li>当b+树的数据项是复合的数据结构，比如(name,age,sex)的时候，b+数是按照从左到右的顺序来建立搜索树的，比如当(张三,20,F)这样的数据来检索的时候，b+树会优先比较name来确定下一步的所搜方向，如果name相同再依次比较age和sex。</li>
+</ol>
+<h2 id="建立索引的原则"><a href="#建立索引的原则" class="headerlink" title="建立索引的原则"></a>建立索引的原则</h2><ol>
+<li>最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询(&gt;、&lt;、between、like)就停止匹配</li>
+<li>尽量选择区分度高的列作为索引</li>
+<li>.索引列不能参与计算，保持列“干净</li>
+<li>尽量的扩展索引</li>
+</ol>
+<h2 id="Hash索引"><a href="#Hash索引" class="headerlink" title="Hash索引"></a>Hash索引</h2><p>哈希索引的示意图</p>
+<p><img src="/images/hashindex.jpg" alt="哈希索引"></p>
+<p>哈希索引采用哈希算法，把键值换算成新的哈希值，不需要像B+-tree，从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度比较快，但是也有相应的缺点</p>
+<h2 id="Hash索引和B-Tree索引的区别"><a href="#Hash索引和B-Tree索引的区别" class="headerlink" title="Hash索引和B+-Tree索引的区别"></a>Hash索引和B+-Tree索引的区别</h2><ul>
+<li>如果是等值查询，哈希索引有明显的绝对优势。前提是键值是唯一的，如果不唯一，就需要先找到该键所在的位置，然后根据链表往后扫描，直到找到相应的数据。</li>
+<li>哈希索引不能用于范围查询检索，因为原先有序的键值，经过哈希算法后，有可能变成不连续的了，就没有办法再利用范围检索。</li>
+<li><strong>哈希索引也没办法利用索引完成排序</strong>，以及like ‘xxx%’ 这样的部分模糊查询（这种部分模糊查询，其实本质上也是范围查询）</li>
+<li>哈希索引不支持联合索引的最左匹配规则</li>
+<li><strong>在有大量重复键值情况下，哈希索引的效率也是极低的，因为存在所谓的哈希碰撞问题</strong>。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/14/MapReduce-执行过程/" rel="next" title="MapReduce 执行过程">
+                <i class="fa fa-chevron-left"></i> MapReduce 执行过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/07/机器学习之评价模型/" rel="prev" title="机器学习之评价模型">
+                机器学习之评价模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/portrait.jpg"
+               alt="Gavin" />
+          <p class="site-author-name" itemprop="name">Gavin</p>
+          <p class="site-description motion-element" itemprop="description">努力的小仓鼠</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">文章</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/GavinRen" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2346258975" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引的目的"><span class="nav-number">2.</span> <span class="nav-text">索引的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引的本质"><span class="nav-number">3.</span> <span class="nav-text">索引的本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘存取原理"><span class="nav-number">4.</span> <span class="nav-text">磁盘存取原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#局部性原理与磁盘预读"><span class="nav-number">4.1.</span> <span class="nav-text">局部性原理与磁盘预读</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引的种类"><span class="nav-number">5.</span> <span class="nav-text">索引的种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree"><span class="nav-number">6.</span> <span class="nav-text">B+-Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree树的查找过程"><span class="nav-number">7.</span> <span class="nav-text">B+-Tree树的查找过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree树的性质"><span class="nav-number">8.</span> <span class="nav-text">B+-Tree树的性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立索引的原则"><span class="nav-number">9.</span> <span class="nav-text">建立索引的原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash索引"><span class="nav-number">10.</span> <span class="nav-text">Hash索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash索引和B-Tree索引的区别"><span class="nav-number">11.</span> <span class="nav-text">Hash索引和B+-Tree索引的区别</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gavin</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v="></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v="></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v="></script>
+<script type="text/javascript" src="/js/src/post-details.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v="></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("ekRpEBkGKhXrKS60nmRy2JkH-gzGzoHsz", "Yd08BDv0W3Rl0Td6N1WC2L9H");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+
+</body>
+</html>

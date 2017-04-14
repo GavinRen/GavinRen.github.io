@@ -1,0 +1,1335 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="面试," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=" />
+
+
+
+
+
+
+<meta name="description" content="菜鸟网络 线程和进程的概念和区别，在windows和linux上的区别？回答：  进程：具有一定独立功能的程序关于某个数据集合上的一次运行活动，是应用程序的一个实例，进程是系统进行资源分配和调度的一个独立单位。进程之间无法进行资源共享。  线程：是进程的一个实体，是CPU调度和分派的基本单位。基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（程序计数器和虚拟机栈），但是它与同属一个进程的其他">
+<meta name="keywords" content="面试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实际面试中遇到的问题">
+<meta property="og:url" content="http://messor.cc/2017/01/10/实际面试中遇到的问题/index.html">
+<meta property="og:site_name" content="任贵福">
+<meta property="og:description" content="菜鸟网络 线程和进程的概念和区别，在windows和linux上的区别？回答：  进程：具有一定独立功能的程序关于某个数据集合上的一次运行活动，是应用程序的一个实例，进程是系统进行资源分配和调度的一个独立单位。进程之间无法进行资源共享。  线程：是进程的一个实体，是CPU调度和分派的基本单位。基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（程序计数器和虚拟机栈），但是它与同属一个进程的其他">
+<meta property="og:image" content="http://messor.cc/images/osi.png">
+<meta property="og:image" content="http://messor.cc/images/collections.jpg">
+<meta property="og:updated_time" content="2017-03-19T13:07:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实际面试中遇到的问题">
+<meta name="twitter:description" content="菜鸟网络 线程和进程的概念和区别，在windows和linux上的区别？回答：  进程：具有一定独立功能的程序关于某个数据集合上的一次运行活动，是应用程序的一个实例，进程是系统进行资源分配和调度的一个独立单位。进程之间无法进行资源共享。  线程：是进程的一个实体，是CPU调度和分派的基本单位。基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（程序计数器和虚拟机栈），但是它与同属一个进程的其他">
+<meta name="twitter:image" content="http://messor.cc/images/osi.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Gavin'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://messor.cc/2017/01/10/实际面试中遇到的问题/"/>
+
+
+
+
+
+  <title> 实际面试中遇到的问题 | 任贵福 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9647bc372a67bdea02f85a7fec3e2c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">任贵福</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://messor.cc/2017/01/10/实际面试中遇到的问题/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gavin">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/portrait.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="任贵福">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="任贵福" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                实际面试中遇到的问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-10T19:00:00+08:00">
+                2017-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/01/10/实际面试中遇到的问题/" class="leancloud_visitors" data-flag-title="实际面试中遇到的问题">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="菜鸟网络"><a href="#菜鸟网络" class="headerlink" title="菜鸟网络"></a>菜鸟网络</h2><ul>
+<li><p>线程和进程的概念和区别，在windows和linux上的区别？回答：</p>
+<ul>
+<li><p>进程：具有一定独立功能的程序关于某个数据集合上的一次运行活动，是应用程序的一个实例，进程是系统进行资源分配和调度的一个独立单位。进程之间<strong>无法进行资源共享</strong>。</p>
+</li>
+<li><p>线程：是进程的一个实体，是CPU调度和分派的基本单位。基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（程序计数器和虚拟机栈），但是它与同属一个进程的其他的线程共享进程所拥有的全部资源。线程是一个更接近执行体的概念。</p>
+<a id="more"></a>
+</li>
+<li><p>线程与进程的区别：</p>
+<ul>
+<li>操作系统资源管理方式：进程有<strong>独立的地址空间</strong>，一个进程崩溃后，在保护模式下不会对其他进程产生影响。而线程只是一个<strong>进程中的不同执行路径</strong>。线程有自己的<strong>堆栈和局部变量</strong>，但线程之间<strong>没有单独的地址空间，</strong>一个线程死掉就等于整个进程死掉。多进程的程序比多线程的程序健壮，但在进程切换时，耗费资源较大。</li>
+<li>一个程序至少有一个进程，一个进程至少有一个线程</li>
+<li>线程的划分都小于进程，使得多线程程序的并发性高。</li>
+<li>线程在执行过程中与进程还是有区别的，每个独立的线程有一个程序运行的入口，顺序执行序列和程序出口。但是线程不能够独立执行，必须依存应用程序中，由应用程序提供多个线程执行控制。</li>
+<li>逻辑角度上看，多线程的意义在于在一个应用程序中，有多个执行部分可以同时执行。但操作系统并没有将多个线程做多个独立的应用，来实现进程的调度和管理以及资源分配，这就是进程和线程的<strong>主要区别</strong></li>
+<li>优缺点：线程执行开销小，但不利于资源的管理和保护，而进程相反。进程可以进行跨机器迁移。</li>
+</ul>
+</li>
+<li><p>多进程：当进程数大于cpu个数时，采用时间片轮转进程调度算法：在操作系统的管理下，所有正在运行的进程轮流使用CPU,由于每个进程占用cpu的时间非常短，用户感受不到。当进程数小于CPU个数时，每个CPU运行一个进程，从而达到多进程并行。</p>
+</li>
+<li><p>windows和linux上的区别：Linux只有进程没有线程的概念。windows的线程相当于linux的进程，windows里面同一个进程里各个线程之间是共享数据的，而linux不是。传统从Unix也支持线程的概念，但是一个进程只有一个线程。</p>
+</li>
+</ul>
+</li>
+<li><p>堆，栈和队列的区别是什么，用过哪些？</p>
+<ul>
+<li>栈：栈是限定只能在表的一端就行插入和删除操作的线性表。先进后出</li>
+<li>队列：限定只能在表的一端进行插入和在另一端进行删除操作的线性表。先进先出</li>
+<li>堆（也叫优先队列）：是一棵完全二叉树，它的特点是父节点的值大于（小于）两个子节点的值（分别称为大顶堆和小顶堆）</li>
+<li>堆是在程序运行时，而不是在程序编译时，申请某个大小的内存空间。即动态分配内存。堆栈则是使用堆的一种方法。</li>
+<li>使用场景：浏览器的后退功能是典型的栈应用。WOW登陆的时候要排队，告诉你是第200个可以登陆的人之类的，系统自然是使用队列每次允许一个玩家进入，这则是队列的使用场景。</li>
+</ul>
+</li>
+<li><p>二叉树的定义是什么？在哪里用过？</p>
+<ul>
+<li>二叉树是有限个元素的集合。二叉树是每个节点最多有两个子树的树结构。通常子树被称作“左子树”和“右子树”。</li>
+<li>用过二叉搜索树，在knn,查找数据时</li>
+</ul>
+</li>
+<li><p>Osi7层是哪7层？Ip和tcp分别在哪一层？</p>
+<p><img src="/images/osi.png" alt="osi"></p>
+<ul>
+<li>物理层： 物理层负责最后将信息编码成电流脉冲或其它信号用于网上传输</li>
+<li>数据链路层：数据链路层通过物理网络链路供数据传输。</li>
+<li>网络层：网络层负责在源和终点之间建立连接</li>
+<li>传输层：传输层向高层提供可靠的端到端的网络数据里流服务</li>
+<li>会话层：会话层建立、管理和终止表示层与实体之间的通信会话；</li>
+<li>表示层：表示层提供多种功能勇于应用层数据编码和转化，以确保一个系统应用层发送的信息可以被另一个系统应用层识别</li>
+<li>应用层：OSI 的应用层协议包括文件的传输、访问及管理协议(FTAM) ,以及文件虚拟终端协议(VIP)和公用管理系统信息(CMIP)等;</li>
+<li>TCP和UDP在传输层，Ip协议在网络层I</li>
+</ul>
+</li>
+<li><p>TCP与UDP的区别：TCP即传输控制协议，UDP即用户数据报协议，区别主要一下几点：</p>
+<ul>
+<li>TCP协议是面向连接的，发送数据之前需要建立连接，UDP协议是无连接的，发送数据之前不需要建立连接</li>
+<li>TCP协议提供可靠的传输服务，UDP协议提供不可靠的传输服务</li>
+<li>TCP发送数据大小会受发送窗口、接收窗口及MSS（最大报文段）限制，因此会分为多段发送；UDP发送数据大小即为数据本身大小</li>
+<li>TCP拥有众多反馈机制与附加机制；UDP没有反馈机制</li>
+<li>TCP传输速度较慢；UDP传输速度较快</li>
+</ul>
+<p>总的来说，TCP协议提供面向连接的，可靠的传输服务，但速度较慢，适合文件下载等传输任务；UDP协议提供无连接的，不可靠的传输服务，但速度较快，适合媒体流等看重传输速度的传输任务。</p>
+</li>
+<li><p>TCP三次握手和四次握手：</p>
+<ul>
+<li>三次握手是指TCP建立连接的过程，分为三个步骤：首先客户机发起请求，然后服务机接受后向客户机回复判断是否是客户机发的请求，最后客户机收到服务机的确认请求，然后发出回复。然后服务器开始分配资源，这样连接建立了。如果两次的话，只要server发出确认，新的连接就建立，由于现在client 并没有发出请求不会理睬server的确认，这样会导致资源浪费</li>
+<li>四次握手是指TCP断开连接过程：1.Client端发起中断连接请求，也就是发送FIN报文 2. Server端接到FIN报文后，发送ACK ，这个时候Client进入FIN_WAIT状态，继续等待Server的报文，3. 当Server端确定数据已发送完成，则向Client端发送FIN报文 4. Client端收到FIN报文后，发送ACK 进入time_wait。client等待2MSL依然没有收到回复，则证明Server端已正常关闭，client也正常关闭。</li>
+</ul>
+</li>
+<li><p>菜鸟分仓比赛的情况？</p>
+<ul>
+<li>最开始采用回归的方法，发现效果不好，就采用了指数平滑算法，进行预测，把地点分成了三种类型，一种是平稳性，一种递增型，一种递减型。</li>
+</ul>
+</li>
+</ul>
+<h2 id="网易游戏"><a href="#网易游戏" class="headerlink" title="网易游戏"></a>网易游戏</h2><ul>
+<li>MapReduce 的split 和HDFS的block的关系<ul>
+<li>split 是HDFS逻辑分区，是用来控制Mapper的数量，split既可以比block大也可以比block 小，split 分了多少个就有多少个Mapper,当没有指定split的大小时，默认的是block的大小</li>
+<li>block是HDFS物理分区，默认设置是128MB.HDFS会把数据分成不同的block,然后按照集群的副本数，把block 复制到不同的datanode</li>
+<li>HDFS主要用来存储大文件的，如果存在大量的小文件的话，应该调节block的大小，避免出现大量的小文件</li>
+<li>因为小文间的信息存在namenode中，会导致namenode的内存非常大，小文件会增加大量的磁盘IO,</li>
+<li>解决小文件的方法：使用hdfs 的sync和append来把小文合成大文件</li>
+</ul>
+</li>
+<li>mysql 连接方式？<ul>
+<li>表的追加：a union b 会先把a 和b的重复纪录删除，然后再排序，union all 就是简单的把两个表合并</li>
+</ul>
+</li>
+<li>hive 中 order by sort by的区别<ul>
+<li>order by 对输入做全局排序，只有一个reducer ,当输入规模较大时，消耗较长的计算时间</li>
+<li>sort by不对全局排序，只保证每个reducer 输出有序</li>
+</ul>
+</li>
+<li>叙述下java 的反射机制<ul>
+<li>类加载包括加载、验证、准备、初始化、使用、卸载。通过Class类的forName(),获得class 对象，进行类加载，然后初始化一个新的对象，进行调用相应的方法</li>
+</ul>
+</li>
+<li>HIve的元数据放在哪里？<ul>
+<li>搭建的时候采用外置数据库，存在mysql 中</li>
+</ul>
+</li>
+<li>项目问题较多</li>
+<li>cdh namenode的备份节点相关问题</li>
+<li>python 数据类型<ul>
+<li>Numbers（数字）：int（有符号整型），long（长整型） float（浮点型）,complex(复数)</li>
+<li>String (字符串)</li>
+<li>List(列表)</li>
+<li>Tuple(元组)： 一旦初始化就无法修改</li>
+<li>Dictionay(字典)</li>
+</ul>
+</li>
+</ul>
+<h2 id="商汤科技"><a href="#商汤科技" class="headerlink" title="商汤科技"></a>商汤科技</h2><ul>
+<li><p>java 基本上问的都是多线程问题：</p>
+<ul>
+<li><p>java 中int 存储字节数：</p>
+<ul>
+<li>1字节(Byte)=8 位(bit)</li>
+<li>整型：int 4字节，short 2字节，long  8字节，byte 1字节</li>
+<li>浮点型：float 4字节（后缀为F）,double 8字节（没有后缀）</li>
+<li>char 类型： 2字节</li>
+<li>boolean 1字节</li>
+</ul>
+</li>
+<li><p>java 字符串编码：默认的是unicode ,当需要改变时，可以<strong>String.getBytes</strong></p>
+</li>
+<li><p>集合的关系图</p>
+<p><img src="/images/collections.jpg" alt="集合关系"></p>
+</li>
+<li><p>叙述垃圾回收的两种算法，叙述原理，并说明特点</p>
+<ul>
+<li>标记-清除算法：算法分为标记和清楚两个阶段：首先标记出所需要回收的对象，标记完成后统一回收。标记算法包括引用计数算法和可达性分析算法。特点：效率不高 2. 会产生大量不连续的内存和碎片</li>
+<li>复制算法：将可用内存按容量划分为大小相等的两块，每次只是用一块，当这一块内存用完了，则将还存活的对象复制到另外一块，再把已使用过的内存空间一次清理掉。这样每次都是对整个半区进行内存回收 优点：效率提升，且不用考虑内存碎片问题。缺点，内存缩小了原来的一半</li>
+<li>标记整理算法：和标记清除方法类似，不过在标记之后不是直接回收，而是让所有存活的对象都向一端移动。然后直接清理掉端边界以外的内存。主要老年代</li>
+<li>分代搜集算法：根据对象的存活周期的不同把内存划分为几块。一般把堆划分为新生代和老年代。然后根据不同代的特点进行收集。新生代采用复制算法，老年带采用标记清理和标记整理</li>
+</ul>
+</li>
+<li><p>HashMap的底层实现，如果是你如何实现</p>
+<ul>
+<li>HashMap的初始容量为16，加载率为0.75</li>
+<li><strong>HashMap的底层结构是一个数组，而数组的元素是一个单向链表。</strong></li>
+<li>HashMap采用hash算法将key散列为一个int值，这个int值对应到数组的下标，再做查询操作的时候，拿到key的散列值，根据数组下标就能直接找到存储在数组的元素。但是由于hash可能会出现相同的散列值，为了解决冲突，<strong>HashMap采用将相同的散列值存储到一个链表中，也就是说在一个链表中的元素他们的散列值绝对是相同的</strong>。</li>
+<li>put过程是先计算hash然后通过hash与table.length取摸计算index值，然后将key放到table[index]位置，当table[index]已存在其它元素时，会在table[index]位置形成一个链表，将新添加的元素放在table[index]，原来的元素通过Entry的next进行链接，这样以链表形式解决hash冲突问题，</li>
+<li>当equals 相同而hashcode值不相同时，会产生在数组中心产生一个位置存放，所以一般要求重写equals 方法时也要重写hashcode方法，要保证hashmap 和hashset 不会存两份相同的对象。</li>
+<li>在table[0]的链表上查找key为null的元素<br>get的过程是先计算hash然后通过hash与table.length取摸计算index值，然后遍历table[index]上的链表，直到找到key，然后返回</li>
+</ul>
+</li>
+<li><p>线程两种实现方式，以及之间的区别，为什么说实现runnable接口方式较好</p>
+<ul>
+<li><a href="./实现线程的两种方式">答案</a></li>
+</ul>
+</li>
+<li><p>java 对象序列化：</p>
+<ul>
+<li>Java平台允许我们在内存中创建可复用的Java对象，但一般情况下，只有当JVM处于运行时，这些对象才可能存在，即，这些对象的生命周期不会比JVM的生命周期更长。但在现实应用中，就可能要求在JVM停止运行之后能够保存(持久化)指定的对象，并在将来重新读取被保存的对象。Java对象序列化就能够帮助我们实现该功能</li>
+<li>使用Java对象序列化，在保存对象时，会把其状态保存为一组字节，在未来，再将这些字节组装成对象。必须注意地是，对象序列化保存的是对象的”状态”，即它的成员变量。由此可知，对象序列化不会关注类中的静态变量</li>
+<li>在Java中，只要一个类实现了java.io.Serializable接口，那么它就可以被序列化</li>
+<li>当某个字段被声明为transient后，默认序列化机制就会忽略该字段。此处将Person类中的age字段声明为transient</li>
+</ul>
+</li>
+<li><p>wait() 和sleep()的区别</p>
+<ul>
+<li>wait() 在 Object 类，sleep() 在 Thread 类</li>
+<li>wait() 方法进入等待状态时会释放同步锁，而 sleep() 方法不会释放同步锁；</li>
+<li>sleep() 在指定的毫秒数内让当前正在执行的线程休眠（暂停执行），时间到了之后会再次执行</li>
+<li>wait() 方法使实体所处线程暂停执行，从而使对象进入等待状态，直到被 notify()、notifyAll() 方法通知之后才会再次执行。notify() 之前线程是需要获得 lock，所以 wait()、notify()、notifyAll()方法都必须写在同步块中synchronized(lockobj) {…}</li>
+</ul>
+</li>
+<li><p>ThreadLocal 和Callable的区别</p>
+<ul>
+<li>ThreadLocal是一个关于创建线程局部变量的类</li>
+<li>通常情况下，我们创建的变量是可以被任何一个线程访问并修改的。而使用ThreadLocal创建的变量只能被当前线程访问，其他线程则无法访问和修改</li>
+<li>Callable： Callable位于java.util.concurrent包下，它也是一个接口，在它里面也只声明了一个方法，只不过这个方法叫做call()，可以有返回值。</li>
+</ul>
+</li>
+<li><p>死锁和活锁的区别</p>
+<ul>
+<li>死锁：当线程A持有互斥锁lock1,线程B当前持有互斥锁lock2.接下来，当线程A仍然持有lock1时，它试图获取lock2,因为线程B正持有lock2,因此线程A会阻塞等待线程B释放。如果此时线程B在持有lock2的时候，也在试图获取lock1，因为线程A正持有lock1,因此B会阻塞等待。二者都在等待对方持有锁的释放，而二者却又都没有释放自己持有的锁。这种情形称为死锁</li>
+</ul>
+</li>
+<li><p>spring 和mybatis区别</p>
+</li>
+<li><p>spring mvc 注解问题：前端发一个请求，在后台如何实现</p>
+<p>在使用注解的SpringMVC中，处理器Handler是基于@Controller和@RequestMapping这两个注解的，@Controller声明一个处理器类，@RequestMapping声明对应请求的映射关系</p>
+</li>
+<li><p>数组存的对象的问题，数组排序问题</p>
+<ul>
+<li>实现 Comparable接口 重写 CompareTo方法，然后使用Arrays.sort()方法</li>
+</ul>
+</li>
+<li><p>程序运行过程中报 java.lang.OutOfMemoryError: PermGen space及其解决方法</p>
+<ul>
+<li>PermGen space的全称是Permanent Generation space,是指内存的永久保存区域OutOfMemoryError: PermGen space从表面上看就是内存益出，也就是方法区，解决方法也一定是加大内存</li>
+</ul>
+</li>
+<li><p>final finally finalize三个修饰符？</p>
+<ul>
+<li>final：修饰符（关键字），如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在声明时给定初值，而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能重载</li>
+<li>finally：在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally块（如果有的话）。</li>
+<li>finalize：方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。只能调用一次。</li>
+</ul>
+</li>
+<li><p>对象的创建：当虚拟机遇到new指令时，首先将去检查这个指令的参数是否能在常量池定位到一个类的符号引用，并且检查这个符合引用代表的类是否已被加载、解析和初始化过。如果没有的话执行相应的类加载过程，在类加载检查通过后，虚拟机将为新生对象分配内存</p>
+</li>
+<li><p>如何区分新生代和老年带：</p>
+<ul>
+<li>主要是用来存放新生的对象。</li>
+<li>主要存放应用程序中生命周期长的内存对象。和大对象</li>
+<li>Permanent：是指内存的永久保存区域，主要存放Class和Meta的信息,Class在被 Load的时候被放入PermGen space区域. 它和和存放Instance的Heap区域不同,GC(Garbage Collection)不会在主程序运行期对PermGen space进行清理，所以如果你的APP会LOAD很多CLASS的话,就很可能出现PermGen space错误。</li>
+</ul>
+</li>
+</ul>
+<p>​</p>
+</li>
+<li><p>Scala:</p>
+<ul>
+<li>scala 的语言的特点:强类型静态性语言</li>
+<li>Scala的基类：java 的基类是Object,Scala的基类为Any,所有的子类为Nothing，类 Any 的另一个子类是类 AnyRef。这个是 Scala 里所有引用类的基类</li>
+<li>scala 有public 修饰符吗？<ul>
+<li>public 访问控制为 Scala 定义的缺省方式，所有没有使用 private 和 protected 修饰的成员都是“公开的”，可以被自由访问。Scala 不需要使用 public 来指定“公开访问”修饰符。</li>
+</ul>
+</li>
+<li>object 与class 的区别<ul>
+<li>Scala类和java类中有些区别，在Scala声明private变量会Scala编译器会自动生成get,set,在Scala中变量是需要初始化的，如果不声明private默认是public的</li>
+<li>Scala中没有静态修饰符，static，在object下的成员全部都是静态的，如果在类中声明了与该类相同的名字的object则该object是该类的“半生对象”，可以理解把类中的static集中放到了object对象中，伴生对象和类文件必须是同一个源文件，可以用伴生对象做一些初始化的操作。</li>
+<li>trait:在java中可以通过interface实现多重继承，在Scala中可以通过特征（trait）实现多重继承，不过与java不同的是，它可以定义自己的属性和实现方法体，在没有自己的实现方法体时可以认为它时java interface是等价的，在Scala中也是一般只能继承一个父类，可以通过多个with进行多重继承。</li>
+</ul>
+</li>
+<li>java 和scala 之间的区别与对比</li>
+<li>val 和var 为什么scala 让尽量选择val<ul>
+<li>使用var 导致代码可读性差，</li>
+<li>使用var 代码不安全，有时候会忘记重新初始化</li>
+</ul>
+</li>
+<li>scala 闭包问题?<ul>
+<li>可以把函数做为参数传进去，同时还能使用不在作用域的变量</li>
+</ul>
+</li>
+<li>​</li>
+</ul>
+</li>
+<li><p>redis:</p>
+<ul>
+<li><p>Redis特点：</p>
+<ul>
+<li>Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用</li>
+<li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储</li>
+<li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
+<li>性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s </li>
+<li>丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。</li>
+<li>原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。</li>
+</ul>
+</li>
+<li><p>redis数据类型</p>
+<p>string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。</p>
+</li>
+<li><p>设计时的选择</p>
+</li>
+</ul>
+</li>
+<li><p>大数据：</p>
+<ul>
+<li>spark cache 和persist 的区别<ul>
+<li>cache表示把rdd 缓存到内存中，采用的级别为：MEMORY_ONLY</li>
+<li>persist（）,手动设置缓存级别</li>
+</ul>
+</li>
+<li>Spark 缓存机制，几种方法<ul>
+<li>MEMORY_ONLY：将RDD作为非序列化的Java对象存储在jvm中。如果RDD不适合存在内存中，一些分区将不会被缓存，从而在每次需要这些分区时都需重新计算它们。这是系统默认的存储级别。</li>
+<li>MEMORY_AND_DISK：将RDD作为非序列化的Java对象存储在jvm中。如果RDD不适合存在内存中，将这些不适合存在内存中的分区存储在磁盘中，每次需要时读出它们。</li>
+<li>MEMORY_ONLY_SER：将RDD作为序列化的Java对象存储（每个分区一个byte数组）。这种方式比非序列化方式更节省空间，特别是用到快速的序列化工具时，但是会更耗费cpu资源—密集的读操作。</li>
+<li>MEMORY_AND_DISK_SER：和MEMORY_ONLY_SER类似，但不是在每次需要时重复计算这些不适合存储到内存中的分区，而是将这些分区存储到磁盘中。</li>
+<li>DISK_ONLY：仅仅将RDD分区存储到磁盘中</li>
+</ul>
+</li>
+<li>数据清洗的策略，及实现方式</li>
+<li>yarn-client 和yarn-cluster的区别：<ul>
+<li>yarn-cluster 和yarn-client 模式的区别就是application Master进程的区别</li>
+<li>Application Master,在Yarn中，每个Application 实例都有一个Application Master进程，它是Application启动的第一个容器，它负责和ResourceManager打交道，并请求资源，获取资源后告诉NodeManager为其启动container</li>
+<li>yarn-cluster模式下，driver运行在AM中，它负责向Yarn 申请资源，并监督作业的运行情况，当用户提交了作业可以关掉Client，作业会继续进行</li>
+<li>yarn-client ,dirver运行在client上，此时client需要调度exector,所以不能关闭client</li>
+</ul>
+</li>
+<li>​</li>
+</ul>
+<h2 id="3-1-阿里妈妈广告"><a href="#3-1-阿里妈妈广告" class="headerlink" title="3/1 阿里妈妈广告"></a>3/1 阿里妈妈广告</h2><p>Linux：<br>1.vim 2-5行a换b写出命令</p>
+<p>​    :2,5s/a/b/gc</p>
+<p>2.前端部署程序到后台 写出命令     如何用Python实现</p>
+</li>
+</ul>
+<p>  3.Python和java函数传参数是值还是引用</p>
+<p>  ​    值传递</p>
+<p>  4.TCP三次握手过程及传的参数</p>
+<ol>
+<li>第一次：建立连接时，客户端发送syn包(SYN=1)到服务器，同时选择初始序号seq=x。此时进入SYN_SENT状态，等待服务器确认</li>
+<li>第二次：服务器接收到客户端的请求包，若同意建立连接，则想客户端发送确认包，SYN和ACK位都置1,确认号是ack=x+1，同时也为自己选择一个初始序号seq=y。此时服务器进入SYN_RCVD状态</li>
+<li><p>客户端接收到服务器的确认包后，还要向服务器发送确认包。确认报文段的ACK置1，确认号ack=y+1，而自己的序号seq=x+1。此包发送完毕，客户端和服务器进入ESTABLISHED状态，完成三次握手过程</p>
+<p>5.用的Hadoop版本<br>6.Hadoop项目  flume干什么   mapreduce原理<br>7.编程：文本文件统计最大词频，不能用分布式</p>
+</li>
+</ol>
+<ol>
+<li><p>根据hash值把文件分成若干小块文件</p>
+<pre><code>2. 然后统计每个文件中的词频，找出最大的词频
+3. 比较每个文件中的词频，找出最大词频
+</code></pre><p>8.10G文本1G内存最大词频，不能用分布式</p>
+<ol>
+<li>根据hash 值分为10个文件，</li>
+<li>然后在统计每个文件的大小</li>
+<li>比较词频</li>
+</ol>
+</li>
+</ol>
+<h2 id="腾讯互动娱乐事业群"><a href="#腾讯互动娱乐事业群" class="headerlink" title="腾讯互动娱乐事业群:"></a>腾讯互动娱乐事业群:</h2><h3 id="如何解决数据分布不均匀问题"><a href="#如何解决数据分布不均匀问题" class="headerlink" title="如何解决数据分布不均匀问题?"></a>如何解决数据分布不均匀问题?</h3><p>机器学习模型都有个待优化的损失函数，一般在训练模型时都会不断地让损失函数降低。而数据分布不均匀的话，例如二分类（正负）中，大量训练数据是属于正样本的，在训练过程中主要把训练集预测为正样本中损失函数就会慢慢地变小，这样训练的模型在实际应用中效果非常差，所以需要解决这种问题</p>
+<p>解决这个问题的思路：</p>
+<ol>
+<li>从数据角度出发，让数据相对均衡一些</li>
+<li>从算法角度粗放，考虑不同误分类情况代价的差异性对算法进行优化，使得我们的算法在不平衡数据下也能有较好的效果</li>
+</ol>
+<h4 id="从数据角度出发"><a href="#从数据角度出发" class="headerlink" title="从数据角度出发"></a>从数据角度出发</h4><ol>
+<li>采样：采样方法通过对训练集进行处理是其从不平衡变成平衡的数据集。采样分为上采样和下采样<ol>
+<li>上采样：把小种类复制多份，一个点会在高维空间中反复出现，训练出来的模型会有一定的过拟合；下采</li>
+<li>下采样：从大众类中选取部分样本，最终的训练集丢失了数据，模型只学到了总体模式的一部分</li>
+<li>随机采样：分为随机欠采样和随机过采样。随机欠采样从大众类中随机选择少量样本再合并小众类的样本作为新的训练数据集。随机欠采样分为又放回和无放回，无放回欠采样对就是采完之后不放回，有放回采样则采完放回去。随机过采样则有放回随机采样从小众类中多次有放回抽取数据，采样的数量要大于原有少数类的数量，构成最后的训练集</li>
+<li>smote</li>
+</ol>
+</li>
+</ol>
+<h3 id="有什么评估模型的指标-比如AUC与ROC"><a href="#有什么评估模型的指标-比如AUC与ROC" class="headerlink" title="有什么评估模型的指标? 比如AUC与ROC"></a>有什么评估模型的指标? 比如AUC与ROC</h3><h3 id="正则项的种类和不同正则项种类之间的差异"><a href="#正则项的种类和不同正则项种类之间的差异" class="headerlink" title="正则项的种类和不同正则项种类之间的差异"></a>正则项的种类和不同正则项种类之间的差异</h3><h2 id="网易游戏-1"><a href="#网易游戏-1" class="headerlink" title="网易游戏"></a>网易游戏</h2><ul>
+<li>python:介绍一下python的装饰器</li>
+<li>java:<ul>
+<li>垃圾回收机制</li>
+<li>应用程序在启动的时候，在jvm中是如何运行的</li>
+<li>介绍一下java 的工厂设计模式</li>
+</ul>
+</li>
+<li>linux:<ul>
+<li>查看进程号的指令</li>
+<li>查看端口号的指令，已经查看端口号指令，以及输出的日志存在的位置</li>
+<li>如何查看启动程序的位置？</li>
+<li>用什么指令？在终端关闭之后还能运行<ul>
+<li>介绍下这个指令的原理</li>
+<li>原来普通进程运行时默认会绑定TTY(虚拟终端)，关闭终端后系统会给上面所有进程发送TERM信号，这时普通进程也就退出了。当然还有些进程不会退出，这就是后面将会提到的守护进程</li>
+<li><code>Nohup</code>的原理也很简单，终端关闭后会给此终端下的每一个进程发送SIGHUP信号，而使用<code>nohup</code>运行的进程则会忽略这个信号，因此终端关闭后进程也不会退出。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>项目：微博中用户画像石如何做的？项目主要介绍下微博数据分析系统？项目偏多</li>
+<li>算法题：如何找出数组中比左边都大比右边都小的数？</li>
+</ul>
+<h2 id="百度"><a href="#百度" class="headerlink" title="百度"></a>百度</h2><ol>
+<li>熟悉什么机器学习模型</li>
+<li>线性回归能做分类吗？<ol>
+<li>​</li>
+</ol>
+</li>
+<li>为什么用逻辑回归做分类？不用线性回归</li>
+<li>讲讲kNN</li>
+<li>讲讲逻辑回归</li>
+<li>二分查找</li>
+<li>反转字符串数组，例如输入：”abc cdf hgf” 输出为“hgf cdf abc”，不能用额外的存储空间，时间复杂度要最低</li>
+<li>用python 进行文件合并：重复的去掉</li>
+</ol>
+<h2 id="阿里-菜鸟网络"><a href="#阿里-菜鸟网络" class="headerlink" title="阿里 菜鸟网络"></a>阿里 菜鸟网络</h2><ol>
+<li><p>介绍菜鸟网络那个比赛</p>
+</li>
+<li><p>介绍下mapreduce的原理</p>
+</li>
+<li><p>mapreduce如何处理数据倾斜问题</p>
+</li>
+<li><p>问我会不会数据库？知不知道索引？</p>
+<ol>
+<li><p>我回答只会些指令。</p>
+<p>然后问了问sql 中内连接和左连接的区别？</p>
+<ol>
+<li>内连接：<code>select x1,x2,x3 from vendors inner join products on vendors.x1 =products.vend_id</code>;内连接只有两个表都有的key才会保留</li>
+<li>左连接<code>select x1,x2,x3 from vendors left join products on vendors.x1 =products.vend_id</code>:以左边的表为主，左表有的才会保存</li>
+<li>右连接<code>select x1,x2,x3 from vendors right join products on vendors.x1 =products.vend_id</code>以右边的表为主，右表有的才会保存</li>
+<li>完全连接：<code>select x1,x2,x3 from vendors full join products on vendors.x1 =products.vend_id</code></li>
+<li>union 在进行表连接后会筛选掉重复的记录，所以在表连接后会对所产生的结果进行排序运算，删除重复的记录再返回</li>
+<li>union all,只是简单的将两个结果合并后返回 </li>
+</ol>
+</li>
+<li><p>where 和having的区别：</p>
+<ol>
+<li>where 过滤行，</li>
+<li>having 过滤的是分组，</li>
+<li>区别：where在数据分组前进行过滤，having在数据分组后进行过滤。where 排除的行不包括在分组中，可能会改变计算值。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>决策树和逻辑回归的区别？什么时候用决策树什么时候用逻辑回归？</p>
+<ol>
+<li>逻辑回归对数据整体结构的分析优于决策树，而决策树对局部结构的分析优于逻辑回归。</li>
+<li>逻辑回归擅长辨识线性关系，而决策树对线性关系的把握较差。线性联系在实践中有很多优点：简洁，易理解，</li>
+<li>可以在一定程度上防止对数据的过度拟合。决策树的强项是非线性关联，但是很多非线性关系完全可以用直线模拟，</li>
+<li>逻辑回归对极值比较敏感，容易受极端值的影响，而决策树对极值有很好的抗干扰性。</li>
+<li>决策树由于采用分割的方法，所以能够深入数据细部，但同时就失去了对全局的把握。一个分层一旦形成，它和别的层面或节点的关系就被切断了，以后的挖掘只能在局部中进行。同时由于切分，样本数量不断萎缩，所以无法支持对多变量的同时检验。而逻辑回归，始终着眼整个数据的拟合，所以对全局把握较好。但无法兼顾局部数据，或者说缺乏探查局部结构的内在机制。</li>
+</ol>
+</li>
+</ol>
+<h2 id="蚂蚁金服"><a href="#蚂蚁金服" class="headerlink" title="蚂蚁金服"></a>蚂蚁金服</h2><ol>
+<li>多态 </li>
+<li>GC  </li>
+<li>HASHMAP hashtable  <ol>
+<li>Hashtable 的方法是同步的，HashMap未经同步，在多线程场合要手动同步HashMap</li>
+<li>Hashtable不允许null （key和value都不行），HashMap允许null值（key和value都可以）</li>
+<li>Hashtable中hash数组默认大小是11，增加的方式是 old*2+1。HashMap中hash数组的默认大小是16，而且一定是2的指数。</li>
+<li>哈希值的使用不同，Hashtable直接使用对象的hashCode，HashMap重新计算hash值，而且用与代替求模</li>
+<li>ConcurrentHashMap和CopyOnWriteArrayList保留了线程安全的同时，也提供了更高的并发性</li>
+<li>Hashtable和ConcurrentHashMap有什么分别呢？它们都可以用于多线程的环境，但是当Hashtable的大小增加到一定的时候，性能会急剧下降，因为迭代时需要被锁定很长的时间。因为ConcurrentHashMap引入了分割(segmentation)，不论它变得多么大，仅仅需要锁定map的某个部分，而其它的线程不需要等到迭代完成才能访问map。</li>
+</ol>
+</li>
+<li>object 方法 </li>
+<li>hashcode重写场景 <ol>
+<li><strong>. 重写equals()方法的同时一定要重写hashcode()方法 </strong></li>
+</ol>
+</li>
+<li>递归和迭代区别 <ol>
+<li>递归的基本概念：程序调用自身的编程技巧称为递归，是函数自己调用自己。</li>
+<li>递归的使用可以使代码更简洁清晰，可读性更好（对于初学者到不见得），但由于递归需要系统堆栈，所以空间消耗要比非递归代码要大很多，而且，如果递归深度太大，可能系统资源会不够用。</li>
+<li>利用变量的原值推算出变量的一个新值。如果递归是自己调用自己的话，迭代就是A不停的调用B。</li>
+</ol>
+</li>
+<li>线程池 <ol>
+<li>线程池的好处：第一：降低资源消耗。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。第二：提高响应速度。当任务到达时，任务可以不需要等到线程创建就能立即执行。第三：提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控</li>
+<li>线程池的创建：通过ThreadPoolExecutor来创建一个线程池</li>
+<li>线程池的参数：<ol>
+<li>corePoolSize（线程池的基本大小）</li>
+<li>runnableTaskQueue（任务队列）：用于保存等待执行的任务的阻塞队列。 可以选择以下几个阻塞队列。</li>
+<li>maximumPoolSize（线程池最大大小）：线程池允许创建的最大线程数。如果队列满了，并且已创建的线程数小于最大线程数，则线程池会再创建新的线程执行任务。值得注意的是如果使用了无界的任务队列这个参数就没什么效果。</li>
+<li>ThreadFactory：用于设置创建线程的工厂，可以通过线程工厂给每个创建出来的线程设置更有意义的名字</li>
+<li>RejectedExecutionHandler（饱和策略）</li>
+<li>keepAliveTime（线程活动保持时间）：线程池的工作线程空闲后，保持存活的时间。所以如果任务很多，并且每个任务执行的时间比较短，可以调大这个时间，提高线程的利用率。</li>
+<li>TimeUnit（线程活动保持时间的单位）</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>springMVC过程， mybatis，</li>
+<li>反射 <ol>
+<li>对象在运行过程中能否有一种机制查看自身的状态，属性和行为。这就是反射机制。<br>每一个运行中的类，都会有一个class对象，表示这个类的类对象。使用关键字new创建一个类的时候，这个类可以没有被加载。但是<br>使用Class对象的newInstance()方法的时候，就必须保证：1、这个类已经加载；<br>2、这个类已经连接了。而完成上面两个步骤的正是Class的静态方法forName()所完成的，<br>这个静态方法调用了启动类加载器，即加载 java API的那个加载器。<br>​</li>
+</ol>
+</li>
+<li>多线程锁 </li>
+<li>CAS 数据库索引 事务特性</li>
+</ol>
+<h2 id="阿里"><a href="#阿里" class="headerlink" title="阿里"></a>阿里</h2><ol>
+<li>Linux启动脚本顺序 ：<ol>
+<li>先识别存储器分区，挂载文件</li>
+<li>运行文件系统中的init=/sbin/init执行启动脚本 </li>
+<li>般这个时候脚本中可能会有分区识别脚本，将分区再识别一次，或者重新挂载nfs（当然，直接在root=nfs，让内核去挂载网络文件系统也是可以的）</li>
+</ol>
+</li>
+<li>linux 启动脚本顺序<ol>
+<li>BIOS自检 （服务器硬件启动的第一步，坑定的啦）</li>
+<li>运行系统内核并检测硬件</li>
+<li>运行系统的第一个进程init</li>
+<li>init读取系统引导配置文件/etc/inittab中的信息进行初始化<ol>
+<li>/etc/rc.d/rc.sysinit——系统初始化脚本</li>
+<li>/etc/rc.d/rcX.d/[KS]*——根据运行级别配置服务</li>
+<li>​</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>基本命令  </p>
+<p>入栈出站o1取最大值 </p>
+<p> 数据库索引b树  母猪生小猪的递归变种题 wait notify<br>NIO  hashMAP  CONCURENTHASHMAP 动态代理 线程池基本参数</p>
+<h2 id="蚂蚁金福-数据开发岗"><a href="#蚂蚁金福-数据开发岗" class="headerlink" title="蚂蚁金福-数据开发岗"></a>蚂蚁金福-数据开发岗</h2><p>1.定义一个线程池需要哪些参数<br>2.对依赖注入的理解<br>3.Bean的生命周期<br>4.SpringMVC中scope的作用<br>5.对消息中间件的理解<br>6.Hadoop和Spark框架理解，MR与Spark之间处理有什么不同<br>7.MR中怎么能够避免数据倾斜<br>8.Mapper与Reducer之间怎么保证数据的正确传输，传输流程是什么<br>9.Mapper与Combiner的关系<br>10.如果搜索一个词条，返回相关度的Top10的词语，整体怎么实现<br>11.KNN算法与贝叶斯算法原理<br>12.怎样合理建立一个数学分析模型，流程是什么<br>13.冒泡排序与堆排序的实现，稳定性</p>
+<h2 id="美团数据研发岗"><a href="#美团数据研发岗" class="headerlink" title="美团数据研发岗"></a>美团数据研发岗</h2><ol>
+<li>mysql 第一范式，第二范式，第三范式</li>
+<li>mapreduce 的执行过程</li>
+<li>mapreduce 数据倾斜问题</li>
+<li>用了哪些机器学习模型，结合项目</li>
+<li>mapreduce 和spark 的区别</li>
+<li>osi 七层模型，tcp协议和Ip协议在哪一层？</li>
+<li>知道哪些排序算法？ 冒泡排序的时间复杂度和快速排序的时间复杂度以及快速排序最差时间复杂度</li>
+</ol>
+<p>2015年9月  - 2016年3月：北京邮电大学研究生会公关部干事<br>2012年9月  - 2013年6月：燕山大学学生会公关部部长<br>2011年9月  -  2015年6月：燕山大学11级通信工程一班班长</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/29/单例模式/" rel="next" title="单例模式">
+                <i class="fa fa-chevron-left"></i> 单例模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/10/实际面试中遇到的问题1/" rel="prev" title="实际面试中遇到的问题">
+                实际面试中遇到的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/portrait.jpg"
+               alt="Gavin" />
+          <p class="site-author-name" itemprop="name">Gavin</p>
+          <p class="site-description motion-element" itemprop="description">努力的小仓鼠</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">文章</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/GavinRen" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2346258975" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#菜鸟网络"><span class="nav-number">1.</span> <span class="nav-text">菜鸟网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网易游戏"><span class="nav-number">2.</span> <span class="nav-text">网易游戏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#商汤科技"><span class="nav-number">3.</span> <span class="nav-text">商汤科技</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-阿里妈妈广告"><span class="nav-number">4.</span> <span class="nav-text">3/1 阿里妈妈广告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#腾讯互动娱乐事业群"><span class="nav-number">5.</span> <span class="nav-text">腾讯互动娱乐事业群:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何解决数据分布不均匀问题"><span class="nav-number">5.1.</span> <span class="nav-text">如何解决数据分布不均匀问题?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从数据角度出发"><span class="nav-number">5.1.1.</span> <span class="nav-text">从数据角度出发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有什么评估模型的指标-比如AUC与ROC"><span class="nav-number">5.2.</span> <span class="nav-text">有什么评估模型的指标? 比如AUC与ROC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则项的种类和不同正则项种类之间的差异"><span class="nav-number">5.3.</span> <span class="nav-text">正则项的种类和不同正则项种类之间的差异</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网易游戏-1"><span class="nav-number">6.</span> <span class="nav-text">网易游戏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百度"><span class="nav-number">7.</span> <span class="nav-text">百度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阿里-菜鸟网络"><span class="nav-number">8.</span> <span class="nav-text">阿里 菜鸟网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蚂蚁金服"><span class="nav-number">9.</span> <span class="nav-text">蚂蚁金服</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阿里"><span class="nav-number">10.</span> <span class="nav-text">阿里</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蚂蚁金福-数据开发岗"><span class="nav-number">11.</span> <span class="nav-text">蚂蚁金福-数据开发岗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#美团数据研发岗"><span class="nav-number">12.</span> <span class="nav-text">美团数据研发岗</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gavin</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v="></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v="></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v="></script>
+<script type="text/javascript" src="/js/src/post-details.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v="></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("ekRpEBkGKhXrKS60nmRy2JkH-gzGzoHsz", "Yd08BDv0W3Rl0Td6N1WC2L9H");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+
+</body>
+</html>

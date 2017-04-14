@@ -1,0 +1,934 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="机器学习,感知机," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=" />
+
+
+
+
+
+
+<meta name="description" content="感知机是二分类的线性分类模型，其输入为实例的特征向量，输出为实例的类别，取+1 和 -1 二值。感知机对应于输入空间（特征空间）将实例划分为正负两类的分离超平面，属于判别模型。感知机的目的就是求出了能把实例划分为两类的分离超平面。下面就以统计学习中的三要素来介绍：模型 + 策略 + 算法">
+<meta name="keywords" content="机器学习,感知机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习之感知机">
+<meta property="og:url" content="http://messor.cc/2017/02/23/机器学习之感知机/index.html">
+<meta property="og:site_name" content="任贵福">
+<meta property="og:description" content="感知机是二分类的线性分类模型，其输入为实例的特征向量，输出为实例的类别，取+1 和 -1 二值。感知机对应于输入空间（特征空间）将实例划分为正负两类的分离超平面，属于判别模型。感知机的目的就是求出了能把实例划分为两类的分离超平面。下面就以统计学习中的三要素来介绍：模型 + 策略 + 算法">
+<meta property="og:updated_time" content="2017-02-24T13:47:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习之感知机">
+<meta name="twitter:description" content="感知机是二分类的线性分类模型，其输入为实例的特征向量，输出为实例的类别，取+1 和 -1 二值。感知机对应于输入空间（特征空间）将实例划分为正负两类的分离超平面，属于判别模型。感知机的目的就是求出了能把实例划分为两类的分离超平面。下面就以统计学习中的三要素来介绍：模型 + 策略 + 算法">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Gavin'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://messor.cc/2017/02/23/机器学习之感知机/"/>
+
+
+
+
+
+  <title> 机器学习之感知机 | 任贵福 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9647bc372a67bdea02f85a7fec3e2c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">任贵福</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://messor.cc/2017/02/23/机器学习之感知机/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gavin">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/portrait.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="任贵福">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="任贵福" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                机器学习之感知机
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-23T10:07:00+08:00">
+                2017-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/23/机器学习之感知机/" class="leancloud_visitors" data-flag-title="机器学习之感知机">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>感知机是二分类的线性分类模型，其输入为实例的特征向量，输出为实例的类别，取+1 和 -1 二值。感知机对应于输入空间（特征空间）将实例划分为正负两类的分离超平面，属于判别模型。感知机的目的就是求出了能把实例划分为两类的分离超平面。下面就以统计学习中的三要素来介绍：模型 + 策略 + 算法<br><a id="more"></a></p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>输入$x \epsilon X$  表示实例的特征向量，输出空间$Y= { +1, -1 }$ ,输出$y \epsilon Y$ .由特征空间到输出空间的函数：</p>
+<p>$$<br>f(x)= sign(w \cdot x +b)<br>$$<br>称为感知机。$w$和$b$ 为感知机模型参数。$w$ 叫作权值或权值向量，$b$叫做偏置，$w \cdot b$ 表示$w$ 和$x$的内积。$sign$是符合函数，即：</p>
+<p>$$<br>sign(x) = \begin{cases} +1,&amp; \text {$x &gt;=0$} \ -1, &amp; \text{$x&lt;0$} \end{cases}<br>$$<br>感知机模型的假设空间是定义在特征空间中的所有线性分类模型或线性分类器，即函数集合${f | f(x) =w \cdot x +b}$.</p>
+<h3 id="几何解释"><a href="#几何解释" class="headerlink" title="几何解释"></a>几何解释</h3><p>线性方程</p>
+<p>$$<br>w \cdot x +b =0<br>$$<br>对应于特征空间$R ^n$中的一个超平面$S$,其中$w$是超平面的法向量，$b $ 是超平面的截距。这个屏幕将特征空间划分为两个部分。位于两部分的（特征向量）分别被分为正、负两类。因此，超平面$S$ 称为分离超平面。</p>
+<h2 id="学习策略"><a href="#学习策略" class="headerlink" title="学习策略"></a>学习策略</h2><p>感知机是通过建立一个超平面来进行类别的判别，所以就要求数据集是线性可分的。感知机的学习策略也就是找出损失函数，然后转变为最优化问题</p>
+<h3 id="数据集的线性可分性"><a href="#数据集的线性可分性" class="headerlink" title="数据集的线性可分性"></a>数据集的线性可分性</h3><p>给定一个数据集:<br>$$<br>T={(x _1,y _1),(x_2,y_2), \cdots ,(x_n,y_n)}<br>$$<br>如果存在某个超平面S<br>$$<br>w \cdot x+b =0<br>$$<br>能够将数据集的正实例和副实例点完全正确地划分到超平面的两侧，即对所有的$y_i =+1$的实例$i$,有$w \cdot x _i &gt;0$,对所有$y _i =-1$的实例$i$,有$w \cdot x_i +b &lt;0$,则称数据集$T$ 为线性可分数据集，否则称数据集$T$线性不可分。</p>
+<h3 id="感知机学习策略"><a href="#感知机学习策略" class="headerlink" title="感知机学习策略"></a>感知机学习策略</h3><p>假设训练数据集市线性可分的，感知机学习的目标是求得一个能够将训练集正实例点和副实例点完全分开的分离超平面。给点了参数，需要确定一个学习策略，即定义损失函数并将损失函数最小化。在[统计学习三要素][1]中提到的几种损失函数，自然想到的是误分类点的总数，也就是0-1损失函数作为感知机的损失函数，但是这个损失函数不连续可导，不易优化。所以感知机的损失函数选择了误分类点到超平面S的总距离。输入空间$R ^n$中任一点$x _0$ 到超平面$S$ 的距离：<br>$$<br>\frac{1} {||w||}|w \cdot x_0 +b|<br>$$<br>这里 $||w||$为$w$的$L_2$范数。</p>
+<p>又因为对于误分类的数据$(x_i,y_i)$来说，<br>$$<br>-y_i(w \cdot x_i +b)&gt;0<br>$$<br>所以误分类点$x_i$ 到超平面$S$的举例为</p>
+<p>$$<br>-\frac{1} {||w||}y_i(w \cdot x_0 +b)<br>$$</p>
+<p>假设超平面$S$的误分类点集合为$M$,那么所有误分类点到超平面$S$的总距离为<br>$$</p>
+<ul>
+<li>\frac{1}{|||w|} \sum_{x_i \epsilon M}{y_i(w \cdot x<em>i +b)}<br>$$<br>不考虑$\frac{1} {||w||}$ ,就得到了感知机的损失函数，所以感知机$sign(w \cdot x +b)$ 学习的损失函数定义为<br>$$<br>L(w,b) =  - \sum</em>{x_i \epsilon M}{y_i(w \cdot x_i +b)}<br>$$<br>其中$M$ 为误分类点的集合。这个损失函数就是感知机学习的经验风险函数。</li>
+</ul>
+<p>显然损失函数是非负的。如果没有误分类点，损失函数值是0.而且误分类点越少，误分类点离超平面越近，损失函数值就越小。在一个特定的样本点的损失函数：在误分类时是参数w,b的线性函数，在正确分类时是0.因此给定训练数据即，损失函数是$w$,$b$的连续可导函数。</p>
+<p>所以感知机学习的策略就是在假设空间中选取损失函数最小的模型参数w,b,即感知机模型。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>感知机学习问题转化为损失函数的最优化问题，最优化的方法是随机梯度下降法。感知机学习的具体算法，包括原始形式和对偶形式。</p>
+<h3 id="感知机学习算法的原始形式"><a href="#感知机学习算法的原始形式" class="headerlink" title="感知机学习算法的原始形式"></a>感知机学习算法的原始形式</h3><p>学习算法就是求参数$w$ ,$b$,使其为以下损失函数极小化问题的解：<br>$$<br>minL(w,b) =  - \sum_{x_i \epsilon M}{y_i(w \cdot x_i +b)}<br>$$<br>其中$M$为误分类点的集合。</p>
+<p>感知机学习算法是误分类驱动的，具体采用随机梯度下降法。首先，任意选取一个超平面$w_0$,$b_0$,,然后用梯度下降法不断极小化损失函数。极小化过程中不是一次使M中所有误分类点的梯度下降，而是一次随机选取一个误分类点使其梯度下降。</p>
+<p>损失函数$L(w,b)$的梯度为：<br>$$<br>\nabla <em>w =- \sum </em>{x_i \in M}{y_ix_i}<br>$$</p>
+<p>$$<br>\nabla <em>b = - \sum </em>{x_i \in M}{y_i}<br>$$</p>
+<p>随机选取一个误分类点$(x_i,y_i)$ ,对w,b进行更新：<br>$$<br>w \leftarrow w+\eta y_i x_i<br>$$</p>
+<p>$$<br>b \leftarrow b + \eta y_i<br>$$</p>
+<p>式中$\eta$ 是步长，又称为学习率。这样通过迭可以期待损失函数不断减小。</p>
+<p>所以感知机学习算法的原始形式为：</p>
+<ul>
+<li><p>输入：训练数据集$T ={(x_1,y_1),(x_2,y_2), \cdots,(y_n,y_n)}$,y为正负一，步长为$\eta$；</p>
+</li>
+<li><p>输出：w,b;感知机模型$f(x) = sign(w \cdot x +b)$</p>
+</li>
+<li><p>过程：</p>
+<ol>
+<li><p>选取初值$w_0$,$b_0$</p>
+</li>
+<li><p>在训练集中选取数据$(x_i,y_i)$</p>
+</li>
+<li><p>如果$y_i(w \cdot x_i +b)$:<br>$$<br>w \leftarrow w+\eta y_i x_i<br>$$</p>
+<p>$$<br>b \leftarrow b + \eta y_i<br>$$</p>
+</li>
+<li><p>转至2，直至训练集中没有误分类点</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="感知机学习算法的对偶形式"><a href="#感知机学习算法的对偶形式" class="headerlink" title="感知机学习算法的对偶形式"></a>感知机学习算法的对偶形式</h2><p>对偶：从一个不同角度去解答相似问题，但是问题的解释相通的，甚至是一样一样的。</p>
+<p>为什么要有对偶形式，主要是因为原始形式计算量大。</p>
+<p>一开始这个对偶问题了解的不是很深，看到知乎上回答才彻底明白。</p>
+<p>在数据有限的情况下，想要学习的更好，则对训练样本重复采样，可以将$x_i$ 学习多次，把$n_i$标记为$x<em>i$ 被学习的次数。N表示为样本空间种类数量而不是误判样本的大小。则<br>$$<br>w</em>{i+1} \leftarrow w_i + \eta \cdot n_i  \cdot y_i x_i<br>$$</p>
+<p>$$<br>b \leftarrow b+ \eta \cdot n_i y_i<br>$$</p>
+<p>这个时候w的下标不再表示第几个误判样本，而代表第几类。简化参数，令$\alpha = n_i \eta$ , $i = 1,2,\cdots N,$,N为样本中分类的数量，而不是迭代次数。当给一默认参数$w<em>0 =0$开始迭代,则有最终的参数：<br>$$<br>w = \sum </em>{i=1} ^{N} {\alpha _i y_i x_i}<br>$$</p>
+<p>$$<br>b =  \sum _{i=1} ^{N}{\alpha _i y_i}<br>$$</p>
+<p>用求$\alpha$ 代替直接去的原因：</p>
+<ul>
+<li>只要能够求出$\alpha _1, \alpha_2,\cdots,\alpha_n$就能求出$w_n$,而且是线性运算，时间复杂度为$O(n)$ </li>
+<li>$\alpha$ 可以迭代，设置初始值为0，迭代的方式：因为$$ \alpha<em>{i} = \eta \cdot n</em>{i}$$ ，所以当输入第i中类型的样本的时候，相应的$n_i$ 加1，表示第i中类型的样本又被多抽查了一次，不是第i次样本，而是第i中样本，所以每次迭代之后$\alpha _i$ 变动为$\alpha _i \leftarrow \eta (n_i +1)$,即如果抽到的是第i种类型的样本，在其种类抽中的数量n加上1就可以了，其他的不变，则迭代模式变成了：</li>
+</ul>
+<p>$$<br>\alpha _i  \leftarrow \eta(n_i+1)=\alpha_i + \eta<br>$$</p>
+<p>$$<br>b \leftarrow  b + \eta y_i<br>$$</p>
+<p>所以感知机学习算法的对偶形式为：</p>
+<ul>
+<li><p>输入：训练数据集$T ={(x_1,y_1),(x_2,y_2), \cdots,(y_n,y_n)}$,y为正负一，步长为$\eta$ </p>
+</li>
+<li><p>输出：$\alpha$ ,$b$;感知机模型为$f(x) = sign(\sum_{j=1} ^{N}{\alpha _j y_j x_j \cdot x} +b)$,其中$\alpha = (\alpha_1,\alpha_2,\cdots \alpha_N)$</p>
+</li>
+<li><p>过程：</p>
+</li>
+</ul>
+<ol>
+<li><p>$\alpha \leftarrow 0$,$b \leftarrow 0$</p>
+</li>
+<li><p>在训练集中选取数据$(x_i,y_i)$</p>
+</li>
+<li><p>如果$$y <em>i(\sum </em>{j=1}^{N}{\alpha _j y_j x_j \cdot s_i}+b)&lt;=0$$<br>$$<br>\alpha _i \leftarrow \alpha _i + \eta<br>$$<br>$$<br>b \leftarrow b+ \eta y_i<br>$$</p>
+</li>
+<li><p>转至2,直到没有误分类数据。</p>
+</li>
+</ol>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>目前实现原始形式</p>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> random</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Perceptron</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,train_data,train_num,step_size=<span class="number">1</span>)</span>:</span></div><div class="line">        self.train_num = train_num</div><div class="line">        self.step_size = step_size</div><div class="line">        self.traning_data = train_data</div><div class="line">        weght_len = len(train_data)<span class="number">-1</span></div><div class="line">        self.weght =[<span class="number">0</span>]*weght_len</div><div class="line">        self.bias =<span class="number">0</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sign</span><span class="params">(self, x)</span>:</span></div><div class="line">        <span class="keyword">if</span>(x &gt;= <span class="number">0</span>):</div><div class="line">            <span class="keyword">return</span> <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">return</span> <span class="number">-1</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self,feature,lable)</span>:</span></div><div class="line">        self.bias += self.step_size*lable</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(feature)):</div><div class="line">            self.weght[i] += self.step_size*feature[i]*lable</div><div class="line">        print(self.bias)</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">training</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.train_num):</div><div class="line">            train = random.choice(self.traning_data)</div><div class="line">            feature = train[:<span class="number">-1</span>]</div><div class="line">            lable = train[<span class="number">-1</span>]</div><div class="line">            predict = self.sign(np.dot(self.weght,feature) +self.bias)</div><div class="line">            print(<span class="string">'predict:'</span>+ str(predict))</div><div class="line">            <span class="keyword">if</span> lable * predict &lt;=<span class="number">0</span>:</div><div class="line">                self.update(feature,lable)</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self,feature)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.sign(np.dot(self.weght,feature) +self.bias)</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">print_parameter</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.weght:</div><div class="line">            print(str(i)+<span class="string">"\t"</span>)</div><div class="line">        print(<span class="string">'bias:'</span>+str(self.bias))</div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    train_data =[[<span class="number">3</span>,<span class="number">3</span>,<span class="number">1</span>],[<span class="number">4</span>,<span class="number">3</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>,<span class="number">-1</span>]]</div><div class="line">    per = Perceptron(train_data,<span class="number">100</span>)</div><div class="line">    per.training()</div><div class="line">    per.print_parameter()</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/感知机/" rel="tag"># 感知机</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/23/机器学习之KNN/" rel="next" title="机器学习之KNN">
+                <i class="fa fa-chevron-left"></i> 机器学习之KNN
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/22/剑指offer之复杂链表的复制/" rel="prev" title="剑指offer之复杂链表的复制">
+                剑指offer之复杂链表的复制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/portrait.jpg"
+               alt="Gavin" />
+          <p class="site-author-name" itemprop="name">Gavin</p>
+          <p class="site-description motion-element" itemprop="description">努力的小仓鼠</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">文章</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/GavinRen" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2346258975" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#模型"><span class="nav-number">1.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几何解释"><span class="nav-number">1.2.</span> <span class="nav-text">几何解释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习策略"><span class="nav-number">2.</span> <span class="nav-text">学习策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集的线性可分性"><span class="nav-number">2.1.</span> <span class="nav-text">数据集的线性可分性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#感知机学习策略"><span class="nav-number">2.2.</span> <span class="nav-text">感知机学习策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法"><span class="nav-number">3.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#感知机学习算法的原始形式"><span class="nav-number">3.1.</span> <span class="nav-text">感知机学习算法的原始形式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感知机学习算法的对偶形式"><span class="nav-number">4.</span> <span class="nav-text">感知机学习算法的对偶形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-number">5.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gavin</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v="></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v="></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v="></script>
+<script type="text/javascript" src="/js/src/post-details.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v="></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("ekRpEBkGKhXrKS60nmRy2JkH-gzGzoHsz", "Yd08BDv0W3Rl0Td6N1WC2L9H");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+
+</body>
+</html>
