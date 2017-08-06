@@ -1676,7 +1676,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://messor.cc/2017/02/24/剑指offer之数字在排序数组中出现的次数/">
+  <link itemprop="mainEntityOfPage" href="http://messor.cc/2017/02/24/剑指offer之数据流中的中位数/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Gavin">
@@ -1701,8 +1701,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/02/24/剑指offer之数字在排序数组中出现的次数/" itemprop="url">
-                  剑指offer之数字在排序数组中出现的次数
+                <a class="post-title-link" href="/2017/02/24/剑指offer之数据流中的中位数/" itemprop="url">
+                  剑指offer之数据流中的中位数
                 </a>
               
             
@@ -1760,7 +1760,7 @@
 
           
           
-             <span id="/2017/02/24/剑指offer之数字在排序数组中出现的次数/" class="leancloud_visitors" data-flag-title="剑指offer之数字在排序数组中出现的次数">
+             <span id="/2017/02/24/剑指offer之数据流中的中位数/" class="leancloud_visitors" data-flag-title="剑指offer之数据流中的中位数">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1788,11 +1788,11 @@
 
       
         
-          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>统计一个数字在排序数组中出现的次数。</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>看到类似于在排序数组中查找数字，第一个想法就是二分查找，我的第一个想法也就是解法一，采用二分查找，当查到这个数字的时候，就向左遍历和向遍历，查找这个数出现的次数，这种思路时间复杂度，在最坏的情况下达到$o(n)$,和直接遍历一遍相差 不大，所以就看了剑指offer,发现剑指offer也是采用二分查找，不过查找的是相同的数字最左边的位置，和最右边的数字，这样的话一减就得到了数字在数组中出现的次数。</p>
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>求中位数，如果数据流中是奇数个，中位数则是排序之后位于中间的数字，如果是偶数个数值，则是排序之后中间两个数的平均值。所以思路很明显，需要对读进来的数据流进行排序。排序有很多种方法，像归并排序和快速排序的时间复杂度都很低。当然也有堆排序，这种方法比较复杂。但是再海量数据中比较实用</p>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2017/02/24/剑指offer之数字在排序数组中出现的次数/#more" rel="contents">
+            <a class="btn" href="/2017/02/24/剑指offer之数据流中的中位数/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1871,7 +1871,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">文章</span>
               </a>
             </div>
@@ -1880,7 +1880,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1889,7 +1889,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">47</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
